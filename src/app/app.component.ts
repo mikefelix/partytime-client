@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
-import { GarageService } from "../providers/GarageService";
+import { QuestService } from "../providers/QuestService";
 
 import { TabsPage } from '../pages/tabs/tabs';
-import {WeatherService} from "../providers/WeatherService";
+import { ChatService } from "../providers/ChatService";
+import {LocalState} from "../providers/localState";
+import {LoginService} from "../providers/LoginService";
 
 
 @Component({
   templateUrl: 'app.html',
-  providers: [GarageService, WeatherService]
+  providers: [QuestService, ChatService, LocalState, LoginService]
 })
 export class MyApp {
   rootPage = TabsPage;

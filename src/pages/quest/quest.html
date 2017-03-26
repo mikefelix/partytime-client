@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{player.alias}}</ion-title>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="refreshState()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="errorMessage">{{errorMessage}}</div>
+
+  <div padding *ngIf="player">
+    <div><b>Items and powers</b></div>
+    <ul style="list-style:none">
+      <li *ngFor="let power of player.powers" style="display:inline">
+        <ion-chip (click)="describePower(power)">
+          <ion-icon name="body"></ion-icon>
+          <ion-label>{{power.name}}</ion-label>
+        </ion-chip>
+      </li>
+      <li *ngFor="let item of player.items" style="display:inline">
+        <ion-chip (click)="describeItem(item)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{item.name}}</ion-label>
+        </ion-chip>
+      </li>
+    </ul>
+  </div>
+
+   <div padding *ngIf="quest">
+     <b>Main quest:</b> {{quest.name}}
+     <div padding>{{quest.description}}</div>
+     <div>
+       <ul style="list-style:none">
+         <li *ngFor="let power of quest.powers" style="display:inline">
+           <ion-chip (click)="describePower(power)">
+             <ion-icon name="body"></ion-icon>
+             <ion-label>{{power.name}}</ion-label>
+             <button *ngIf="power.found" ion-button clear color="dark"><ion-icon name="checkmark"></ion-icon></button>
+           </ion-chip>
+         </li>
+         <li *ngFor="let item of quest.items" style="display:inline">
+           <ion-chip (click)="describeItem(item)">
+             <ion-icon name="build" color="secondary"></ion-icon>
+             <ion-label>{{item.name}}</ion-label>
+             <button *ngIf="item.found" ion-button clear color="dark"><ion-icon name="checkmark"></ion-icon></button>
+           </ion-chip>
+         </li>
+       </ul>
+     </div>
+   </div>
+
+   <div padding *ngIf="sidequest">
+     <b>Side quest:</b> {{sidequest.name}}
+     <div padding>{{sidequest.description}}</div>
+     <div>
+       <ul style="list-style:none">
+         <li *ngFor="let power of sidequest.powers" style="display:inline">
+           <ion-chip (click)="describePower(power)">
+             <ion-icon name="body"></ion-icon>
+             <ion-label>{{power.name}}</ion-label>
+             <button *ngIf="power.found" ion-button clear color="dark"><ion-icon name="checkmark"></ion-icon></button>
+           </ion-chip>
+         </li>
+         <li *ngFor="let item of sidequest.items" style="display:inline">
+           <ion-chip (click)="describeItem(item)">
+             <ion-icon name="build" color="secondary"></ion-icon>
+             <ion-label>{{item.name}}</ion-label>
+             <button *ngIf="item.found" ion-button clear color="dark"><ion-icon name="checkmark"></ion-icon></button>
+           </ion-chip>
+         </li>
+       </ul>
+     </div>
+   </div>
+</ion-content>

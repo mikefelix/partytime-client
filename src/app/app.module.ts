@@ -2,18 +2,18 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
-import { WeatherPage } from '../pages/weather/weather';
-import { GaragePage } from '../pages/garage/garage';
-import { LightsPage } from '../pages/lights/lights';
+import { ChatPage } from '../pages/chat/chat';
+import { QuestPage } from '../pages/quest/quest';
+import { PlayersPage } from '../pages/players/players';
 import { TabsPage } from '../pages/tabs/tabs';
 
 @NgModule({
   declarations: [
     MyApp,
     AboutPage,
-    WeatherPage,
-    GaragePage,
-    LightsPage,
+    ChatPage,
+    QuestPage,
+    PlayersPage,
     TabsPage
   ],
   imports: [
@@ -23,9 +23,9 @@ import { TabsPage } from '../pages/tabs/tabs';
   entryComponents: [
     MyApp,
     AboutPage,
-    WeatherPage,
-    LightsPage,
-    GaragePage,
+    ChatPage,
+    PlayersPage,
+    QuestPage,
     TabsPage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]

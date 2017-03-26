@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Chat</ion-title>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="refreshState()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="errorMessage">{{errorMessage}}</div>
+  <div padding>
+
+    Chat
+
+  </div>
+</ion-content>

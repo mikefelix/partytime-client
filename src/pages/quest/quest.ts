@@ -5,22 +5,25 @@ import { Quest } from "../../providers/Quest";
 import { AlertController } from 'ionic-angular';
 import {LoginService} from "../../providers/LoginService";
 import {Player} from "../../providers/Player";
-import {Http} from "@angular/http";
+import {PlayerService} from "../../providers/PlayerService";
 
 @Component({
   selector: 'page-quest',
   templateUrl: 'quest.html'
 })
 export class QuestPage implements OnInit {
+  started: boolean;
   quest: Quest;
   sidequest: Quest;
   player: Player;
-
+  sidequestAlly: string;
   errorMessage: string;
 
-  constructor(private questService: QuestService, private loginService: LoginService, public alertCtrl: AlertController) {
+  constructor(private questService: QuestService, private playerService: PlayerService,
+              private loginService: LoginService, public alertCtrl: AlertController) {
     this.quest = {
       id: 0,
+      master: 0,
       name: '',
       description: '',
       items: [],
@@ -29,6 +32,7 @@ export class QuestPage implements OnInit {
 
     this.sidequest = {
       id: 0,
+      master: 0,
       name: '',
       description: '',
       items: [],
@@ -42,12 +46,20 @@ export class QuestPage implements OnInit {
       items: [],
       powers: []
     };
+
+    this.sidequestAlly = "your ally";
   }
 
   ngOnInit() {
     this.refreshPlayer();
     this.refreshQuest();
     this.refreshSidequest();
+
+    //noinspection TypeScriptUnresolvedFunction
+    this.questService.gameIsStarted().then( (yes: boolean) => {
+      this.started = true//yes;
+    })
+
   }
 
   refreshPlayer() {
@@ -66,23 +78,30 @@ export class QuestPage implements OnInit {
 
   refreshSidequest(){
     //noinspection TypeScriptUnresolvedFunction
-    this.questService.getSidequestForPlayer(this.player.id).then(q => {
-      this.sidequest = q;
+    this.questService.getSidequestForPlayer(this.player.id).then((q: Quest) => {
+      if (q.id == 0){
+        this.sidequest = {
+          id: 0,
+          master: 0,
+          name: '',
+          description: '',
+          items: [],
+          powers: []
+        };
+      }
+      else {
+        this.sidequest = q;
+        this.playerService.getPlayer(q.master).then((p:Player) => {
+          this.sidequestAlly = p.alias;
+        })
+      }
     })
   }
 
-  describePower(power){
+  describeReq(req){
     this.alertCtrl.create({
-      title: power.name,
-      subTitle: power.description,
-      buttons: ['Dismiss']
-    }).present();
-  }
-
-  describeItem(item){
-    this.alertCtrl.create({
-      title: item.name,
-      subTitle: item.description,
+      title: req.name,
+      subTitle: req.description,
       buttons: ['Dismiss']
     }).present();
   }

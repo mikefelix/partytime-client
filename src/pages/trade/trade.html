@@ -1,0 +1,57 @@
+<div *ngIf="options" style="width:90%">
+  <div>Trading with {{otherPlayer.alias}}</div>
+
+  <div *ngIf="trade.creating()">
+    <div>What do you offer?</div>
+    <ion-select [(ngModel)]="option">
+      <ion-option *ngFor="let opt of options" [value]="opt.key">{{opt.value}}</ion-option>
+    </ion-select>
+    <button ion-button (click)="cancelTrade()">Cancel</button>
+    <button ion-button (click)="proposeTrade()">Propose</button>
+  </div>
+
+  <div *ngIf="trade.responding()">
+    <div>They offer:</div>
+    <div *ngIf="isItem(trade.offer())">
+       <ion-chip (click)="describeReq(trade.offer())">
+         <ion-icon name="build" color="secondary"></ion-icon>
+         <ion-label>{{trade.offererOther}}</ion-label>
+       </ion-chip>
+    </div>
+    <div *ngIf="!isItem(trade.offer())">
+        {{trade.offer()}}
+    </div>
+    <div>What do you offer in return?</div>
+    <ion-select [(ngModel)]="option">
+      <ion-option *ngFor="let opt of options" [value]="opt.key">{{opt.value}}</ion-option>
+    </ion-select>
+    <button ion-button (click)="cancelTrade()">Reject</button>
+    <button ion-button (click)="proposeTrade()">Propose</button>
+  </div>
+
+  <div *ngIf="trade.accepting()">
+    <div>You offer:</div>
+    <div *ngIf="isItem(trade.offer())">
+       <ion-chip (click)="describeReq(trade.offer())">
+         <ion-icon name="build" color="secondary"></ion-icon>
+         <ion-label>{{trade.offererOther}}</ion-label>
+       </ion-chip>
+    </div>
+    <div *ngIf="!isItem(trade.offer())">
+        {{trade.offer()}}
+    </div>
+    <div>They offer:</div>
+    <div *ngIf="isItem(trade.counteroffer())">
+       <ion-chip (click)="describeReq(trade.counteroffer())">
+         <ion-icon name="build" color="secondary"></ion-icon>
+         <ion-label>{{trade.offereeOther}}</ion-label>
+       </ion-chip>
+    </div>
+    <div *ngIf="!isItem(trade.counteroffer())">
+        {{trade.counteroffer()}}
+    </div>
+    <button ion-button (click)="cancelTrade()">Reject</button>
+    <button ion-button (click)="acceptTrade()">Accept</button>
+  </div>
+
+</div>

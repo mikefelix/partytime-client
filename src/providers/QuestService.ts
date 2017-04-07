@@ -1,14 +1,13 @@
 import {Injectable, OnInit} from "@angular/core";
 import {Http} from "@angular/http";
 import {Quest} from "./Quest";
+import {Player} from "./Player";
 import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 
 @Injectable()
 export class QuestService implements OnInit {
-  //noinspection TypeScriptUnresolvedVariable
-  data: Promise<Quest>;
-
+  started: boolean;
   constructor(private http: Http) {
   }
 
@@ -18,7 +17,6 @@ export class QuestService implements OnInit {
   getQuestForPlayer(player: number, refresh = false) {
     return this.http.get(`http://localhost:9000/games/1/players/${player}/quest`)
       .map(r => {
-        console.dir(r);
         return r.json() as Quest;
       })
       .toPromise()
@@ -27,10 +25,27 @@ export class QuestService implements OnInit {
   getSidequestForPlayer(player: number, refresh = false) {
     return this.http.get(`http://localhost:9000/games/1/players/${player}/sidequest`)
       .map(r => {
-        console.dir(r);
         return r.json() as Quest;
       })
       .toPromise()
   }
 
+  gameIsStarted(){
+    if (this.started){
+      //noinspection TypeScriptUnresolvedFunction
+      return new Promise((resolve, reject) => {
+        resolve(true);
+      });
+    }
+
+    return this.http.get(`http://localhost:9000/games/1`)
+      .map(r => {
+        let game = r.json();
+        if (game && game.started)
+          this.started = true;
+
+        return this.started
+      })
+      .toPromise()
+  }
 }

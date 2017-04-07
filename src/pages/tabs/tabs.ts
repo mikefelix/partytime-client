@@ -4,7 +4,6 @@ import { QuestPage } from '../quest/quest';
 import { PlayersPage } from '../players/players';
 import { ChatPage } from "../chat/chat";
 import {AlertController} from "ionic-angular/index";
-import {LocalState} from "../../providers/localState";
 import {LoginService} from "../../providers/LoginService";
 
 @Component({
@@ -49,12 +48,14 @@ export class TabsPage implements OnInit {
           text: 'Login',
           handler: data => {
             //noinspection TypeScriptUnresolvedFunction
+/*
             this.loginService.login(data.username, data.password).then( (result) => {
               console.log('result: ' + result);
               if (result){
 
               }
             });
+*/
             return false;
           }
         }

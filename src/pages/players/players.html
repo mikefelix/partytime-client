@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Lights</ion-title>
+    <ion-title>Heroes</ion-title>
     <ion-buttons start>
       <button ion-button icon-only (click)="refreshState()">
         <ion-icon name="refresh"></ion-icon>
@@ -11,7 +11,37 @@
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
-  <div padding>
-    Player
-  </div>
+
+    <div *ngFor="let player of players">
+      <b>{{player.alias}} ({{player.name}})</b>
+      <div>
+        <button ion-button (click)="initiateTrade(player, $event)">
+          <ion-label>Trade</ion-label>
+          <ion-icon name="swap"></ion-icon>
+        </button>
+        <button ion-button (click)="invite(player)">
+          <ion-label>Invite</ion-label>
+          <ion-icon name="megaphone"></ion-icon>
+        </button>
+      </div>
+
+      <!--
+            <ul style="list-style:none">
+              <li *ngFor="let power of player.powers" style="display:inline">
+                <ion-chip (click)="describeReq(power)">
+                  <ion-icon name="body"></ion-icon>
+                  <ion-label>{{power.name}}</ion-label>
+                  <button ion-button clear color="dark" (click)="invite(player)"><ion-icon name="megaphone"></ion-icon></button>
+                </ion-chip>
+              </li>
+              <li *ngFor="let item of player.items" style="display:inline">
+                <ion-chip (click)="describeReq(item)">
+                  <ion-icon name="build" color="secondary"></ion-icon>
+                  <ion-label>{{item.name}}</ion-label>
+                  <button ion-button clear color="dark" (click)="initiateTrade(item, player)"><ion-icon name="swap"></ion-icon></button>
+                </ion-chip>
+              </li>
+            </ul>
+      -->
+    </div>
 </ion-content>

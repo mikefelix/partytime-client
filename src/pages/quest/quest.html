@@ -1,21 +1,19 @@
 <ion-header>
   <ion-navbar>
     <ion-title>{{player.alias}}</ion-title>
-    <ion-buttons start>
-      <button ion-button icon-only (click)="refreshState()">
-        <ion-icon name="refresh"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
   <div *ngIf="!started">
-    Game has not started...
+    <div padding>
+      Game has not started...
+    </div>
   </div>
   <div *ngIf="started">
     <div padding *ngIf="player">
+      <!--<button ion-button (click)="removeLogin()">Change login</button>-->
       <div><b>Items and powers</b></div>
       <ul style="list-style:none">
         <li *ngFor="let power of player.powers" style="display:inline">

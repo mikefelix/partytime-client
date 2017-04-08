@@ -13,6 +13,7 @@ import { AlertController } from 'ionic-angular';
 export class TradePage implements OnInit {
   player: Player;
   otherPlayer: Player;
+  tradeId: number;
   trade: Trade;
   options: Array<Object>;
   option: string = "+1";
@@ -23,11 +24,14 @@ export class TradePage implements OnInit {
     this.player = params.get('player');
     this.otherPlayer = params.get('otherPlayer');
 
-    this.trade = new Trade(params.get('trade') as number);
+    this.tradeId = params.get('tradeId') as number;
+    this.trade = params.get('trade') as Trade;
+    if (!this.trade)
+      this.trade = new Trade(0);
   }
 
   ngOnInit(){
-    if (this.trade.id > 0){
+    if (this.tradeId && this.tradeId > 0){
       //noinspection TypeScriptUnresolvedFunction
       this.tradeService.getTrade(this.player.id, this.trade.id).then(trade => {
         this.trade = trade;

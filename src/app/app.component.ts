@@ -9,6 +9,8 @@ import {LocalState} from "../providers/localState";
 import {LoginService} from "../providers/LoginService";
 import {TradeService} from "../providers/TradeService";
 import {PlayerService} from "../providers/PlayerService";
+import {AboutPage} from "../pages/about/about";
+import {BlankPage} from "../pages/blank/blank";
 
 
 @Component({
@@ -16,15 +18,18 @@ import {PlayerService} from "../providers/PlayerService";
   providers: [QuestService, ChatService, LocalState, LoginService, TradeService, PlayerService]
 })
 export class MyApp {
-  rootPage = TabsPage;
+  rootPage = BlankPage;
 
   constructor(platform: Platform) {
     //noinspection TypeScriptUnresolvedFunction
     platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
       Splashscreen.hide();
+
+      if (!localStorage.getItem("player"))
+        this.rootPage = AboutPage;
+      else
+        this.rootPage = TabsPage;
     });
   }
 }

@@ -7,12 +7,7 @@ import {AlertController} from "ionic-angular/index";
 import {LoginService} from "../../providers/LoginService";
 
 @Component({
-  template: `
-  <ion-tabs>
-    <ion-tab [root]="tab1Root" tabTitle="Me" tabIcon="car"></ion-tab>
-    <ion-tab [root]="tab2Root" tabTitle="Them" tabIcon="bulb"></ion-tab>
-    <ion-tab [root]="tab3Root" tabTitle="Chat" tabIcon="sunny"></ion-tab>
-  </ion-tabs>`
+  templateUrl: 'tabs.html'
 })
 export class TabsPage implements OnInit {
   // this tells the tabs component which Pages
@@ -20,6 +15,8 @@ export class TabsPage implements OnInit {
   tab1Root: any = QuestPage;
   tab2Root: any = PlayersPage;
   tab3Root: any = ChatPage;
+
+  chatNum: number = 1;
 
   constructor(private loginService: LoginService, private alertCtrl: AlertController) {
   }

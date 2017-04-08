@@ -40,9 +40,9 @@ export class QuestPage implements OnInit {
     };
 
     this.player = {
-      id: 1,
-      name: "Brandon",
-      alias: "Mr. Buttkix",
+      id: 0,
+      name: "",
+      alias: "",
       items: [],
       powers: []
     };
@@ -51,20 +51,25 @@ export class QuestPage implements OnInit {
   }
 
   ngOnInit() {
+    let player = this.loginService.getId();
+    if (!player)
+      throw 'No player ID found in localStorage.';
+
+    this.player.id = player;
     this.refreshPlayer();
     this.refreshQuest();
     this.refreshSidequest();
 
     //noinspection TypeScriptUnresolvedFunction
     this.questService.gameIsStarted().then( (yes: boolean) => {
-      this.started = true//yes;
+      this.started = yes;
     })
 
   }
 
   refreshPlayer() {
     //noinspection TypeScriptUnresolvedFunction
-    this.loginService.getPlayer(this.player.id).then(p => {
+    this.playerService.getPlayer(this.player.id).then(p => {
       this.player = p;
     });
   }
@@ -104,5 +109,9 @@ export class QuestPage implements OnInit {
       subTitle: req.description,
       buttons: ['Dismiss']
     }).present();
+  }
+
+  removeLogin(){
+    localStorage.removeItem("player");
   }
 }

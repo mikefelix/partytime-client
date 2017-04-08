@@ -7,7 +7,7 @@ import { QuestPage } from '../pages/quest/quest';
 import { PlayersPage } from '../pages/players/players';
 import { TabsPage } from '../pages/tabs/tabs';
 import {TradePage} from "../pages/trade/trade";
-import {TradeService} from "../providers/TradeService";
+import {BlankPage} from "../pages/blank/blank";
 
 @NgModule({
   declarations: [
@@ -17,7 +17,8 @@ import {TradeService} from "../providers/TradeService";
     QuestPage,
     PlayersPage,
     TabsPage,
-    TradePage
+    TradePage,
+    BlankPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -30,7 +31,8 @@ import {TradeService} from "../providers/TradeService";
     PlayersPage,
     QuestPage,
     TabsPage,
-    TradePage
+    TradePage,
+    BlankPage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

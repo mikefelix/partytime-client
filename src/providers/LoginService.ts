@@ -22,31 +22,14 @@ export class LoginService {
     this.http.post(this.loginUrl, body)
       .map((res: Response) => {
         let player = res.json();
-        localStorage.setItem('player', JSON.stringify(player));
+        localStorage.setItem('playerId', player.id);
       });
       // .catch((error: any) => Observable.throw(error.json().error || 'Server error'))
       // .toPromise();
   }
 
-  getPlayer(id: number) {
-    return this.http.get(`http://localhost:9000/games/1/players/${id}`)
-      .map(r => {
-        console.dir(r);
-        return r.json() as Player;
-      })
-      .toPromise();
-
-/*
-    let p = localStorage.getItem('player');
-    if (p)
-      return p;
-    else
-      return {
-        alias: 'Mr. Buttkix',
-        name: 'Brandon',
-        id: 1,
-        items:[]
-      }
-*/
+  getId(){
+    return +localStorage.getItem('player');
   }
+
 }

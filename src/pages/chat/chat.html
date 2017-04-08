@@ -12,8 +12,18 @@
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
   <div padding>
+    <ion-list>
+      <ion-item *ngFor="let chat of chats">
+        <div (click)="handleClick(chat)">{{cleanedMsg(chat)}}</div>
+        <div style="float:right; font-size:0.9em" *ngIf="chat.poster">{{chat.posterName}}</div>
+      </ion-item>
 
-    Chat
-
+      <ion-item>
+          <ion-input type="text" name="text" placeholder="chat" [(ngModel)]="enteredChat"></ion-input>
+      </ion-item>
+      <ion-item>
+          <button ion-button type="submit" value="Post" (click)="postChat()">Post</button>
+      </ion-item>
+    </ion-list>
   </div>
 </ion-content>

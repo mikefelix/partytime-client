@@ -1,11 +1,23 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      About
+      Hero login
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-
+  <div>{{message}}</div>
+  <form (ngSubmit)="login()">
+    <ion-item>
+      <ion-label floating>Your first name</ion-label>
+      <ion-input type="text" [(ngModel)]="playerName" name="playerName" [ngModelOptions]="{standalone: true}"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Your superhero/supervillain alias</ion-label>
+      <ion-input type="text" [(ngModel)]="heroName" name="heroName" [ngModelOptions]="{standalone: true}"></ion-input>
+    </ion-item>
+    <br/><br/>
+    <button ion-button type="submit" [disabled]="!formValid()" block>Join game</button>
+  </form>
 </ion-content>

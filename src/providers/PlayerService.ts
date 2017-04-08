@@ -21,6 +21,17 @@ export class PlayerService implements OnInit {
       })
   }
 
+  createPlayer(playerName: string, heroName: string){
+    return this.http.post(`http://localhost:9000/games/1/players`, JSON.stringify({
+      game: 1,
+      name: playerName,
+      alias: heroName
+    })).map(r => {
+      return r.json() as Player;
+    })
+      .toPromise()
+  }
+
   getPlayer(player: number, refresh = false) {
     if (refresh){
       this.players[player] = undefined;

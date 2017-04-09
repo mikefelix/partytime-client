@@ -5,6 +5,7 @@ import {Player} from "./Player";
 import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 import {Score} from "./Score";
+import {AppSettings} from "./AppSettings";
 
 @Injectable()
 export class PlayerService implements OnInit {
@@ -15,14 +16,14 @@ export class PlayerService implements OnInit {
   }
 
   ngOnInit(){
-    this.http.get(`http://localhost:9000/games/1/players}`)
+    this.http.get(`${AppSettings.API_URL}/games/1/players}`)
       .map(r => {
         this.players = r.json() as Player[];
       })
   }
 
   createPlayer(playerName: string, heroName: string){
-    return this.http.post(`http://localhost:9000/games/1/players`, JSON.stringify({
+    return this.http.post(`${AppSettings.API_URL}/games/1/players`, JSON.stringify({
       game: 1,
       name: playerName,
       alias: heroName
@@ -44,7 +45,7 @@ export class PlayerService implements OnInit {
       });
     }
 
-    return this.http.get(`http://localhost:9000/games/1/players/${player}`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}`)
       .map(r => {
         return r.json() as Player;
       })
@@ -62,7 +63,7 @@ export class PlayerService implements OnInit {
       });
     }
 
-    return this.http.get(`http://localhost:9000/games/1/scores`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/scores`)
       .map(r => {
         return r.json() as Score[];
       })
@@ -70,10 +71,10 @@ export class PlayerService implements OnInit {
   }
 
   getPlayersExcept(except: number){
-    return this.http.get(`http://localhost:9000/games/1/players`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/players`)
       .map(r => {
         let arr = r.json() as Player[];
-        arr.filter( p => p.id != except );
+        arr = arr.filter( p => p.id != except );
         return arr;
       })
       .toPromise()

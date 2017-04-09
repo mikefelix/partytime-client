@@ -11,15 +11,16 @@ import {TradeService} from "../../providers/TradeService";
 import {Trade} from "../../providers/Trade";
 
 @Component({
-  selector: 'page-chat',
-  templateUrl: 'chat.html'
+  selector: 'page-alerts',
+  templateUrl: 'alerts.html'
 })
-export class ChatPage implements OnInit {
+export class AlertsPage implements OnInit {
   chats: Chat[];
   player: Player;
   enteredChat: string;
 
-  constructor(public chatService: ChatService, private playerService: PlayerService, private loginService: LoginService) {
+  constructor(public chatService: ChatService, private popoverCtrl: PopoverController, private playerService: PlayerService,
+              private loginService: LoginService, private tradeService: TradeService) {
     this.chats = []
   }
 
@@ -40,6 +41,20 @@ export class ChatPage implements OnInit {
       setTimeout(() => this.pollForChats(svc, player), 5000);
   }
 
+  handleClick(chat: Chat){
+    if (!chat.poster && chat.poster == 0){
+      // 1. Accept a join proposal
+
+
+      // 2. Accept a trade invitation
+      if (/^Trade request/.test(chat.chat)){
+        let tradeId = +chat.chat.match(/\{([0-9]+)\}$/)[1];
+        this.respondToTradeRequest(tradeId);
+      }
+
+    }
+  }
+
   postChat(){
     //noinspection TypeScriptUnresolvedFunction
     let body = {
@@ -52,6 +67,24 @@ export class ChatPage implements OnInit {
     this.chatService.postChat(body).then(() => {
         this.enteredChat = '';
         this.pollForChats(this.chatService, this.player, false);
+    });
+  }
+
+
+  respondToTradeRequest(tradeId){
+    //noinspection TypeScriptUnresolvedFunction
+    this.tradeService.getTrade(this.player.id, tradeId, true).then( (trade: Trade) => {
+      let otherPlayer = this.playerService.getPlayer(trade.offerer);
+
+      let popover = this.popoverCtrl.create(TradePage, {
+        player: this.player,
+        otherPlayer: otherPlayer,
+        trade: trade
+      });
+
+      popover.present({
+        // ev: ev
+      });
     });
   }
 

@@ -4,6 +4,7 @@ import {Quest} from "./Quest";
 import {Player} from "./Player";
 import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
+import {AppSettings} from "./AppSettings";
 
 @Injectable()
 export class QuestService implements OnInit {
@@ -15,7 +16,7 @@ export class QuestService implements OnInit {
   }
 
   getQuestForPlayer(player: number, refresh = false) {
-    return this.http.get(`http://localhost:9000/games/1/players/${player}/quest`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/quest`)
       .map(r => {
         return r.json() as Quest;
       })
@@ -23,7 +24,7 @@ export class QuestService implements OnInit {
   }
 
   getSidequestForPlayer(player: number, refresh = false) {
-    return this.http.get(`http://localhost:9000/games/1/players/${player}/sidequest`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/sidequest`)
       .map(r => {
         return r.json() as Quest;
       })
@@ -38,7 +39,7 @@ export class QuestService implements OnInit {
       });
     }
 
-    return this.http.get(`http://localhost:9000/games/1`)
+    return this.http.get(`${AppSettings.API_URL}/games/1`)
       .map(r => {
         let game = r.json();
         if (game && game.started)

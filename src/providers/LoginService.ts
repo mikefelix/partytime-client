@@ -3,6 +3,7 @@ import {Http, Response} from "@angular/http";
 import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 import {Player} from "./Player";
+import {AppSettings} from "./AppSettings";
 
 @Injectable()
 export class LoginService {
@@ -12,7 +13,7 @@ export class LoginService {
   //   id: 1
   // };
 
-  private loginUrl = 'http://localhost:9000/login';
+  private loginUrl = `${AppSettings.API_URL}/login`;
 
   constructor(private http: Http) {
   }

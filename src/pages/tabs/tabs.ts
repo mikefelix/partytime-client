@@ -5,6 +5,9 @@ import { PlayersPage } from '../players/players';
 import { ChatPage } from "../chat/chat";
 import {AlertController} from "ionic-angular/index";
 import {LoginService} from "../../providers/LoginService";
+import {AlertsPage} from "../alerts/alerts";
+import {ChatService} from "../../providers/ChatService";
+import {Chat} from "../../providers/Chat";
 
 @Component({
   templateUrl: 'tabs.html'
@@ -15,14 +18,20 @@ export class TabsPage implements OnInit {
   tab1Root: any = QuestPage;
   tab2Root: any = PlayersPage;
   tab3Root: any = ChatPage;
+  tab4Root: any = AlertsPage;
 
-  chatNum: number = 1;
+  alertNum: number;
 
-  constructor(private loginService: LoginService, private alertCtrl: AlertController) {
+  constructor(private loginService: LoginService, private alertCtrl: AlertController, public chatService: ChatService) {
   }
 
   ngOnInit(){
+    let player = this.loginService.getId();
+    this.chatService.getAlerts(player).then( (alerts: Chat[]) => {
+      this.alertNum = alerts ? alerts.length : undefined;
+    });
   }
+
 
   showLogin(){
     let alert = this.alertCtrl.create({

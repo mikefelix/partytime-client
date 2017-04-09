@@ -5,6 +5,7 @@ import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 import {Trade} from "./Trade";
 import {TradeStage} from "./TradeStage";
+import {AppSettings} from "./AppSettings";
 
 @Injectable()
 export class TradeService implements OnInit {
@@ -16,7 +17,7 @@ export class TradeService implements OnInit {
   }
 
   getTradesForPlayer(player: number, refresh = false) {
-    return this.http.get(`http://localhost:9000/games/1/players/${player}/trades`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/trades`)
       .map(r => {
         return r.json() as Trade[];
       })
@@ -24,7 +25,7 @@ export class TradeService implements OnInit {
   }
 
   getTrade(player: number, id: number, refresh = false) {
-    return this.http.get(`http://localhost:9000/games/1/players/${player}/trades/${id}`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/trades/${id}`)
       .map(r => {
         return r.json() as Trade;
       })
@@ -34,33 +35,33 @@ export class TradeService implements OnInit {
   offerTrade(trade: Trade) {
     trade.stage = TradeStage.Offered;
     let body = JSON.stringify(trade);
-    return this.http.post(`http://localhost:9000/games/1/players/${trade.offerer}/trades`, body)
+    return this.http.post(`${AppSettings.API_URL}/games/1/players/${trade.offerer}/trades`, body)
       .toPromise()
   }
 
   counterofferTrade(trade: Trade) {
     trade.stage = TradeStage.Counteroffered;
     let body = JSON.stringify(trade);
-    return this.http.put(`http://localhost:9000/games/1/players/${trade.offeree}/trades/${trade.id}`, body)
+    return this.http.put(`${AppSettings.API_URL}/games/1/players/${trade.offeree}/trades/${trade.id}`, body)
       .toPromise()
   }
 
   acceptTrade(trade: Trade) {
     trade.stage = TradeStage.Accepted;
     let body = JSON.stringify(trade);
-    return this.http.put(`http://localhost:9000/games/1/players/${trade.offerer}/trades/${trade.id}`, body)
+    return this.http.put(`${AppSettings.API_URL}/games/1/players/${trade.offerer}/trades/${trade.id}`, body)
       .toPromise()
   }
 
   rejectTrade(trade: Trade) {
     trade.stage = TradeStage.Rejected;
     let body = JSON.stringify(trade);
-    return this.http.put(`http://localhost:9000/games/1/players/${trade.offerer}/trades/${trade.id}`, body)
+    return this.http.put(`${AppSettings.API_URL}/games/1/players/${trade.offerer}/trades/${trade.id}`, body)
       .toPromise()
   }
 
   getOfferOptions(player: Player) {
-    return this.http.get(`http://localhost:9000/games/1/players/${player.id}/offeroptions`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player.id}/offeroptions`)
       .map(r => {
         return r.json() as Array<Object>;
       })

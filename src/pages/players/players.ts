@@ -6,20 +6,22 @@ import {AlertController} from "ionic-angular/index";
 import { PopoverController } from 'ionic-angular';
 import {TradePage} from "../trade/trade";
 import {PlayerService} from "../../providers/PlayerService";
+import {LoginService} from "../../providers/LoginService";
 
 @Component({
   selector: 'page-players',
   templateUrl: 'players.html'
 })
 export class PlayersPage implements OnInit {
+  started: boolean;
   players: Player[];
   player: Player;
 
-  constructor(private playerService: PlayerService, private popoverCtrl: PopoverController,
-              private alertCtrl: AlertController) {
+  constructor(private playerService: PlayerService, private questService: QuestService, private popoverCtrl: PopoverController,
+              private alertCtrl: AlertController, private loginService: LoginService) {
     this.players = [];
     this.player = {
-        id: 1,
+        id: +localStorage.getItem("player"),
         name: "",
         alias: "",
         items: [],
@@ -28,15 +30,24 @@ export class PlayersPage implements OnInit {
   }
 
   ngOnInit() {
+    let playerId = this.loginService.getId();
+    if (!playerId)
+      return;
+
     //noinspection TypeScriptUnresolvedFunction
-    this.playerService.getPlayersExcept(this.player.id).then(p => {
+    this.playerService.getPlayersExcept(playerId).then(p => {
         this.players = p;
     });
 
     //noinspection TypeScriptUnresolvedFunction
-    this.playerService.getPlayer(this.player.id).then((p: Player) => {
+    this.playerService.getPlayer(playerId).then((p: Player) => {
         this.player = p;
     });
+
+    this.questService.gameIsStarted().then( (started: boolean) => {
+      this.started = started;
+    });
+
   }
 
   describeReq(req){

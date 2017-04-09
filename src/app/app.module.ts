@@ -3,6 +3,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
 import { ChatPage } from '../pages/chat/chat';
+import { AlertsPage } from '../pages/alerts/alerts';
 import { QuestPage } from '../pages/quest/quest';
 import { PlayersPage } from '../pages/players/players';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -18,7 +19,8 @@ import {BlankPage} from "../pages/blank/blank";
     PlayersPage,
     TabsPage,
     TradePage,
-    BlankPage
+    BlankPage,
+    AlertsPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -32,7 +34,8 @@ import {BlankPage} from "../pages/blank/blank";
     QuestPage,
     TabsPage,
     TradePage,
-    BlankPage
+    BlankPage,
+    AlertsPage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

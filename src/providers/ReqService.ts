@@ -4,6 +4,7 @@ import {Item} from "./Item";
 import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 import {Score} from "./Score";
+import {AppSettings} from "./AppSettings";
 
 @Injectable()
 export class ReqService implements OnInit {
@@ -14,7 +15,7 @@ export class ReqService implements OnInit {
   }
 
   ngOnInit(){
-    this.http.get(`http://localhost:9000/games/1/items}`)
+    this.http.get(`${AppSettings.API_URL}/games/1/items}`)
       .map(r => {
         this.items = r.json() as Item[];
       })
@@ -32,7 +33,7 @@ export class ReqService implements OnInit {
       });
     }
 
-    return this.http.get(`http://localhost:9000/games/1/items/${item}`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/items/${item}`)
       .map(r => {
         return r.json() as Item;
       })

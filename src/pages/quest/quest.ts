@@ -57,26 +57,27 @@ export class QuestPage implements OnInit {
 
     this.player.id = player;
     this.refreshPlayer();
-    this.refreshQuest();
-    this.refreshSidequest();
 
-    //noinspection TypeScriptUnresolvedFunction
-    this.questService.gameIsStarted().then( (yes: boolean) => {
-      this.started = yes;
-    })
+    this.questService.gameIsStarted().then( (started: boolean) => {
+      this.started = started;
+      if (started) {
+        this.refreshQuest();
+        this.refreshSidequest();
+      }
+    });
 
   }
 
   refreshPlayer() {
     //noinspection TypeScriptUnresolvedFunction
-    this.playerService.getPlayer(this.player.id).then(p => {
+    this.playerService.getPlayer(this.player.id).then( (p: Player) => {
       this.player = p;
     });
   }
 
   refreshQuest(){
     //noinspection TypeScriptUnresolvedFunction
-    this.questService.getQuestForPlayer(this.player.id).then(q => {
+    this.questService.getQuestForPlayer(this.player.id).then( (q: Quest) => {
       this.quest = q;
     })
   }
@@ -96,7 +97,7 @@ export class QuestPage implements OnInit {
       }
       else {
         this.sidequest = q;
-        this.playerService.getPlayer(q.master).then((p:Player) => {
+        this.playerService.getPlayer(q.master).then((p: Player) => {
           this.sidequestAlly = p.alias;
         })
       }

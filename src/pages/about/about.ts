@@ -24,7 +24,7 @@ export class AboutPage {
 
     //noinspection TypeScriptUnresolvedFunction
     this.playerService.createPlayer(this.playerName, this.heroName).then( (player: Player) => {
-      localStorage.setItem("player", player.id.toString);
+      localStorage.setItem("player", player.id.toString());
       this.message = `Welcome, ${this.heroName}! Please reload the page to begin. ${localStorage.getItem("player")}`;
     });
   }

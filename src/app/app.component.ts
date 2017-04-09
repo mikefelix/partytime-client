@@ -18,7 +18,7 @@ import {BlankPage} from "../pages/blank/blank";
   providers: [QuestService, ChatService, LocalState, LoginService, TradeService, PlayerService]
 })
 export class MyApp {
-  rootPage = BlankPage;
+  rootPage: Object = BlankPage;
 
   constructor(platform: Platform) {
     //noinspection TypeScriptUnresolvedFunction

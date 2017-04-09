@@ -10,9 +10,6 @@ export class BlankPage {
   }
 
   debug(){
-    if (localStorage.getItem("player").match(/function/))
-      localStorage.clear()
-
     return localStorage.getItem("player");
   }
 }

@@ -6,10 +6,15 @@
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
-
+  <!--<div *ngIf="!started">-->
+    <!--<div padding>-->
+      <!--Game has not started...-->
+    <!--</div>-->
+  <!--</div>-->
+  <div padding>
     <div *ngFor="let player of players">
       <b>{{player.alias}} ({{player.name}})</b>
-      <div>
+      <div *ngIf="started">
         <button ion-button (click)="initiateTrade(player, $event)">
           <ion-label>Trade</ion-label>
           <ion-icon name="swap"></ion-icon>
@@ -19,24 +24,7 @@
           <ion-icon name="megaphone"></ion-icon>
         </button>
       </div>
-
-      <!--
-            <ul style="list-style:none">
-              <li *ngFor="let power of player.powers" style="display:inline">
-                <ion-chip (click)="describeReq(power)">
-                  <ion-icon name="body"></ion-icon>
-                  <ion-label>{{power.name}}</ion-label>
-                  <button ion-button clear color="dark" (click)="invite(player)"><ion-icon name="megaphone"></ion-icon></button>
-                </ion-chip>
-              </li>
-              <li *ngFor="let item of player.items" style="display:inline">
-                <ion-chip (click)="describeReq(item)">
-                  <ion-icon name="build" color="secondary"></ion-icon>
-                  <ion-label>{{item.name}}</ion-label>
-                  <button ion-button clear color="dark" (click)="initiateTrade(item, player)"><ion-icon name="swap"></ion-icon></button>
-                </ion-chip>
-              </li>
-            </ul>
-      -->
     </div>
+  </div>
+
 </ion-content>

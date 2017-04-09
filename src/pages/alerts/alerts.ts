@@ -15,30 +15,22 @@ import {Trade} from "../../providers/Trade";
   templateUrl: 'alerts.html'
 })
 export class AlertsPage implements OnInit {
-  chats: Chat[];
+  alerts: Chat[];
   player: Player;
   enteredChat: string;
 
   constructor(public chatService: ChatService, private popoverCtrl: PopoverController, private playerService: PlayerService,
               private loginService: LoginService, private tradeService: TradeService) {
-    this.chats = []
+    this.alerts = [];
   }
 
   ngOnInit():void {
     this.playerService.getPlayer(this.loginService.getId()).then((player: Player) => {
       this.player = player;
-      this.pollForChats(this.chatService, this.player);
+      this.chatService.getAlerts(this.player.id).then((alerts: Chat[]) => {
+        this.alerts = alerts;
+      });
     });
-  }
-
-  pollForChats(svc, player, reschedule: Boolean = true){
-    //noinspection TypeScriptUnresolvedFunction
-    svc.getLatest(player).then((data) => {
-      this.chats = data;
-    });
-
-    if (reschedule)
-      setTimeout(() => this.pollForChats(svc, player), 5000);
   }
 
   handleClick(chat: Chat){
@@ -54,22 +46,6 @@ export class AlertsPage implements OnInit {
 
     }
   }
-
-  postChat(){
-    //noinspection TypeScriptUnresolvedFunction
-    let body = {
-      "game": 1,
-      "poster": this.player.id,
-      "chat": this.enteredChat
-    };
-
-    //noinspection TypeScriptUnresolvedFunction
-    this.chatService.postChat(body).then(() => {
-        this.enteredChat = '';
-        this.pollForChats(this.chatService, this.player, false);
-    });
-  }
-
 
   respondToTradeRequest(tradeId){
     //noinspection TypeScriptUnresolvedFunction

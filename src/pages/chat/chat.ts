@@ -20,7 +20,7 @@ export class ChatPage implements OnInit {
   enteredChat: string;
 
   constructor(public chatService: ChatService, private playerService: PlayerService, private loginService: LoginService) {
-    this.chats = []
+    this.chats = [];
   }
 
   ngOnInit():void {

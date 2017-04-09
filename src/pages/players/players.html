@@ -13,7 +13,7 @@
   <!--</div>-->
   <div padding>
     <div *ngFor="let player of players">
-      <b>{{player.alias}} ({{player.name}})</b>
+      <b>{{player.alias}} ({{player.name}}) {{player.id}}</b>
       <div *ngIf="started">
         <button ion-button (click)="initiateTrade(player, $event)">
           <ion-label>Trade</ion-label>

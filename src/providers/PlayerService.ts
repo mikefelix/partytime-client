@@ -6,6 +6,7 @@ import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 import {Score} from "./Score";
 import {AppSettings} from "./AppSettings";
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class PlayerService implements OnInit {
@@ -30,6 +31,7 @@ export class PlayerService implements OnInit {
     })).map(r => {
       return r.json() as Player;
     })
+      .catch((error:any) => Observable.throw(error.json().error || 'Server error'))
       .toPromise()
   }
 

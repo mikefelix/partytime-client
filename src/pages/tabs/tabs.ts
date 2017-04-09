@@ -27,13 +27,12 @@ export class TabsPage implements OnInit {
 
   ngOnInit(){
     let player = this.loginService.getId();
-    this.checkForAlerts(this.chatService, player)
+    this.checkForAlerts(this.chatService, player);
   }
 
   checkForAlerts(svc, player){
     svc.getAlerts(player).then( (alerts: Chat[]) => {
-      this.alertNum = alerts ? alerts.length : undefined;
-
+      this.alertNum = alerts && alerts.length > 0 ? alerts.length : undefined;
       setTimeout(() => this.checkForAlerts(svc, player), 5000);
     });
   }

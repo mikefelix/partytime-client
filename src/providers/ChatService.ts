@@ -23,8 +23,18 @@ export class ChatService {
   }
 */
 
+  markAlertRead(id: number) {
+    return this.http.delete(`${AppSettings.API_URL}/games/1/alerts/${id}`)
+      .map( res => {
+        this.alerts = undefined;
+        return res;
+      })
+      .catch((error:any) => Observable.throw(error.json().error || 'Server error'))
+      .toPromise()
+  }
+
   getLatest(player: Player){
-    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player.id}/chats`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/chats`)
       .map((res: Response) => res.json() as Chat[])
       .catch((error:any) => Observable.throw(error.json().error || 'Server error'))
       .toPromise()
@@ -37,6 +47,7 @@ export class ChatService {
         .map((res:Response) => {
           this.alerts = (res.json() as Chat[]) || [];
           setTimeout(() => this.alerts = undefined);
+          return this.alerts;
         })
         .catch((error:any) => Observable.throw(error.json().error || 'Server error'))
         .toPromise()

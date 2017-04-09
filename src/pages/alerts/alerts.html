@@ -9,8 +9,7 @@
   <div padding>
     <ion-list>
       <ion-item *ngFor="let alert of alerts">
-        <div (click)="handleClick(alert)">{{cleanedMsg(alert)}}</div>
-        <div style="float:right; font-size:0.9em" *ngIf="alert.poster">{{alert.posterName}}</div>
+        <div (click)="handleClick(alert, $event)">{{cleanedMsg(alert)}}</div>
       </ion-item>
     </ion-list>
   </div>

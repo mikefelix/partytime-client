@@ -7,6 +7,7 @@ import { PopoverController } from 'ionic-angular';
 import {TradePage} from "../trade/trade";
 import {PlayerService} from "../../providers/PlayerService";
 import {LoginService} from "../../providers/LoginService";
+import {InvitePage} from "../invite/invite";
 
 @Component({
   selector: 'page-players',
@@ -58,7 +59,7 @@ export class PlayersPage implements OnInit {
     }).present();
   }
 
-  invite(fellow){
+  inviteWithAlert(fellow){
     this.alertCtrl.create({
       title: 'Call to action',
       subTitle: `Invite ${fellow} to help you on your quest?`,
@@ -68,29 +69,42 @@ export class PlayersPage implements OnInit {
       },{
         text: 'Yes!',
         handler: data => {
-          this.proposeJoin(fellow);
+          // this.invite(fellow);
         }
       }]
     }).present();
   }
 
-  proposeTrade(req, fellow, offer){
+  invite(otherPlayer, ev){
+    let popover = this.popoverCtrl.create(InvitePage, {
+      player: this.player,
+      otherPlayer: otherPlayer
+    });
 
-  }
-
-  proposeJoin(fellow){
-
+    popover.present();
   }
 
   initiateTrade(otherPlayer, ev){
     let popover = this.popoverCtrl.create(TradePage, {
       player: this.player,
       otherPlayer: otherPlayer,
-      trade: 0
+      tradeId: 0
     });
 
-    popover.present({
-      // ev: ev
-    });
+/*
+    console.log('ev:');
+    console.dir(ev);
+    let fake = {};
+    for (let key of ev){
+      fake[key] = ev[key];
+    }
+    fake['x'] = 0; fake['y'] = 0;
+    fake['clientX'] = 0; fake['clientY'] = 0;
+    fake['pageX'] = 0; fake['pageY'] = 0;
+    console.dir(fake);
+    popover.present({ev: fake});
+*/
+    popover.present();
+
   }
 }

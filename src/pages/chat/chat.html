@@ -16,9 +16,8 @@
       <ion-item>
           <ion-input type="text" name="text" placeholder="Chat here" [(ngModel)]="enteredChat"></ion-input>
       </ion-item>
-      <ion-item>
-          <button ion-button type="submit" value="Post" (click)="postChat()">Post</button>
-      </ion-item>
     </ion-list>
+
+    <button ion-button type="submit" value="Post" (click)="postChat()" block>Post</button>
   </div>
 </ion-content>

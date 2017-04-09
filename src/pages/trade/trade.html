@@ -1,57 +1,117 @@
 <div padding *ngIf="options" style="width:90%">
   <div style="font-weight:bold">Trading with {{otherPlayer.alias}}</div>
 
-  <div *ngIf="trade.creating()">
-    <div>What do you offer?</div>
-    <ion-select [(ngModel)]="option">
-      <ion-option *ngFor="let opt of options" [value]="opt.key">{{opt.value}}</ion-option>
-    </ion-select>
-    <button ion-button (click)="cancelTrade()">Cancel</button>
-    <button ion-button (click)="proposeTrade()">Propose</button>
+  <div *ngIf="message">
+    <div padding>{{message}}</div>
   </div>
 
-  <div *ngIf="trade.responding()">
-    <div>They offer:</div>
-    <div *ngIf="isItem(trade.offer())">
-       <ion-chip (click)="describeReq(trade.offer())">
-         <ion-icon name="build" color="secondary"></ion-icon>
-         <ion-label>{{trade.offererOther}}</ion-label>
-       </ion-chip>
+  <div *ngIf="!mask">
+    <div *ngIf="trade.creating()">
+      <div>What do you offer?</div>
+      <ion-select [(ngModel)]="option" style="width:100%">
+        <ion-option *ngFor="let opt of options" [value]="opt.key">{{opt.value}}</ion-option>
+      </ion-select>
+      <button ion-button (click)="proposeTrade()" block>Propose</button>
     </div>
-    <div *ngIf="!isItem(trade.offer())">
-        {{trade.offer()}}
-    </div>
-    <div>What do you offer in return?</div>
-    <ion-select [(ngModel)]="option">
-      <ion-option *ngFor="let opt of options" [value]="opt.key">{{opt.value}}</ion-option>
-    </ion-select>
-    <button ion-button (click)="cancelTrade()">Reject</button>
-    <button ion-button (click)="proposeTrade()">Propose</button>
-  </div>
 
-  <div *ngIf="trade.accepting()">
-    <div>You offer:</div>
-    <div *ngIf="isItem(trade.offer())">
-       <ion-chip (click)="describeReq(trade.offer())">
-         <ion-icon name="build" color="secondary"></ion-icon>
-         <ion-label>{{trade.offererOther}}</ion-label>
-       </ion-chip>
-    </div>
-    <div *ngIf="!isItem(trade.offer())">
+    <div *ngIf="trade.responding()">
+      <div>They offer:</div>
+      <div *ngIf="trade.offerIsItem()">
+        <ion-chip (click)="describeReq(trade.offererItem)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{trade.offererOther}}</ion-label>
+        </ion-chip>
+      </div>
+      <div *ngIf="!trade.offerIsItem()" padding>
         {{trade.offer()}}
+      </div>
+      <div>What do you offer in return?</div>
+      <ion-select [(ngModel)]="option">
+        <ion-option *ngFor="let opt of options" [value]="opt.key">{{opt.value}}</ion-option>
+      </ion-select>
+      <button ion-button (click)="cancelTrade()" block>Reject</button>
+      <button ion-button (click)="proposeTrade()" block>Propose</button>
     </div>
-    <div>They offer:</div>
-    <div *ngIf="isItem(trade.counteroffer())">
-       <ion-chip (click)="describeReq(trade.counteroffer())">
-         <ion-icon name="build" color="secondary"></ion-icon>
-         <ion-label>{{trade.offereeOther}}</ion-label>
-       </ion-chip>
-    </div>
-    <div *ngIf="!isItem(trade.counteroffer())">
+
+    <div *ngIf="trade.accepting()">
+      <div>You offer:</div>
+      <div *ngIf="trade.offerIsItem()">
+        <ion-chip (click)="describeReq(trade.offererItem)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{trade.offererOther}}</ion-label>
+        </ion-chip>
+      </div>
+      <div *ngIf="!trade.offerIsItem()" padding>
+        {{trade.offer()}}
+      </div>
+      <div>They offer:</div>
+      <div *ngIf="trade.counterofferIsItem()">
+        <ion-chip (click)="describeReq(trade.offereeItem)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{trade.offereeOther}}</ion-label>
+        </ion-chip>
+      </div>
+      <div *ngIf="!trade.counterofferIsItem()" padding>
         {{trade.counteroffer()}}
+      </div>
+      <div *ngIf="canAct(trade)">
+        <button ion-button (click)="cancelTrade()" block>Reject</button>
+        <button ion-button (click)="proposeTrade()" block>Accept</button>
+      </div>
+      <div *ngIf="!canAct(trade)">
+        <div>Awaiting response...</div>
+      </div>
     </div>
-    <button ion-button (click)="cancelTrade()">Reject</button>
-    <button ion-button (click)="acceptTrade()">Accept</button>
+
+    <div *ngIf="trade.accepted()">
+      <div>Trade accepted. You received:</div>
+      <div *ngIf="trade.offerIsItem()">
+        <ion-chip (click)="describeReq(trade.offererItem)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{trade.offererOther}}</ion-label>
+        </ion-chip>
+      </div>
+      <div *ngIf="!trade.offerIsItem()" padding>
+        {{trade.offer()}}
+      </div>
+      <div>They received:</div>
+      <div *ngIf="trade.counterofferIsItem()">
+        <ion-chip (click)="describeReq(trade.offereeItem)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{trade.offereeOther}}</ion-label>
+        </ion-chip>
+      </div>
+      <div *ngIf="!trade.counterofferIsItem()" padding>
+        {{trade.counteroffer()}}
+      </div>
+    </div>
+
+    <div *ngIf="trade.rejected()">
+      <div>Trade was rejected. You offered:</div>
+      <div>They received:</div>
+      <div *ngIf="trade.counterofferIsItem()">
+        <ion-chip (click)="describeReq(trade.offereeItem)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{trade.offereeOther}}</ion-label>
+        </ion-chip>
+      </div>
+      <div *ngIf="!trade.counterofferIsItem()" padding>
+        {{trade.counteroffer()}}
+      </div>
+      <div>They had offered:</div>
+      <div *ngIf="trade.offerIsItem()">
+        <ion-chip (click)="describeReq(trade.offererItem)">
+          <ion-icon name="build" color="secondary"></ion-icon>
+          <ion-label>{{trade.offererOther}}</ion-label>
+        </ion-chip>
+      </div>
+      <div *ngIf="!trade.offerIsItem()" padding>
+        {{trade.offer()}}
+      </div>
+    </div>
+
   </div>
+
+  <button ion-button (click)="close()" block>Close</button>
 
 </div>

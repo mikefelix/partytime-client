@@ -23,10 +23,20 @@ export class AboutPage {
     }
 
     //noinspection TypeScriptUnresolvedFunction
-    this.playerService.createPlayer(this.playerName, this.heroName).then( (player: Player) => {
-      localStorage.setItem("player", player.id.toString());
-      this.message = `Welcome, ${this.heroName}! Please reload the page to begin. ${localStorage.getItem("player")}`;
-    });
+    this.playerService.createPlayer(this.playerName, this.heroName).then(
+      (player: Player) => {
+        if (player){
+          localStorage.setItem("player", player.id.toString());
+          this.message = `Welcome, ${this.heroName}! Please reload the page to begin. ${localStorage.getItem("player")}`;
+        }
+        else {
+          this.message = "It didn't work! Try a different alias?";
+        }
+      },
+      (reason: string) => {
+        this.message = "It didn't work! Try a different alias? " + reason;
+      }
+    );
   }
 
   formValid(){

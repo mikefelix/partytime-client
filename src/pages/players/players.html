@@ -12,14 +12,15 @@
     <!--</div>-->
   <!--</div>-->
   <div padding>
-    <div *ngFor="let player of players">
-      <b>{{player.alias}} ({{player.name}}) {{player.id}}</b>
+    <div *ngFor="let player of players" padding>
+      <h3>{{player.alias}} ({{player.name}})</h3>
+      <div>Score: {{player.score}} points</div>
       <div *ngIf="started">
         <button ion-button (click)="initiateTrade(player, $event)">
           <ion-label>Trade</ion-label>
           <ion-icon name="swap"></ion-icon>
         </button>
-        <button ion-button (click)="invite(player)">
+        <button ion-button (click)="invite(player, $event)">
           <ion-label>Invite</ion-label>
           <ion-icon name="megaphone"></ion-icon>
         </button>

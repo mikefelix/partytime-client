@@ -5,26 +5,31 @@ import {Trade} from "../../providers/Trade";
 import {TradeService} from "../../providers/TradeService";
 import {Http, Response} from "@angular/http";
 import { AlertController } from 'ionic-angular';
+import {ChatService} from "../../providers/ChatService";
 
 @Component({
   templateUrl: 'trade.html',
-  providers: [TradeService],
+  providers: [TradeService, ChatService],
 })
 export class TradePage implements OnInit {
   player: Player;
   otherPlayer: Player;
   tradeId: number;
   trade: Trade;
+  alert: number;
   options: Array<Object>;
   option: string = "+1";
   message: String;
+  mask: boolean = false;
 
-  constructor(private params: NavParams, public viewCtrl: ViewController, public tradeService: TradeService, public alertCtrl: AlertController) {
-    this.options;// = [];
+  constructor(private params: NavParams, public viewCtrl: ViewController, public tradeService: TradeService,
+              public alertCtrl: AlertController, public chatService: ChatService) {
+    // this.options;// = [];
     this.player = params.get('player');
     this.otherPlayer = params.get('otherPlayer');
 
     this.tradeId = params.get('tradeId') as number;
+    this.alert = params.get('alert') as number;
     this.trade = params.get('trade') as Trade;
     if (!this.trade)
       this.trade = new Trade(0);
@@ -47,16 +52,36 @@ export class TradePage implements OnInit {
   cancelTrade(){
     if (!this.trade.creating()){
       //noinspection TypeScriptUnresolvedFunction
-      this.tradeService.rejectTrade(this.trade).then((res: Response) => {
-        this.message = res.statusText;
+      this.tradeService.rejectTrade(this.trade).then(msg => {
+        this.message = msg;
+        if (this.alert)
+          this.chatService.markAlertRead(this.alert);
       });
     }
 
+    this.mask = true;
     this.close();
   }
 
+  canAct(){
+    if (!this.trade)
+      return false;
+
+    if (this.trade.creating()){
+      return true;
+    }
+    else if (this.trade.responding()){
+      return this.player.id == this.trade.offeree;
+    }
+    else if (this.trade.accepting()){
+      return this.player.id == this.trade.offerer;
+    }
+    else {
+      return false;
+    }
+  }
+
   proposeTrade(){
-    console.log('Propose trade with ' + this.option);
     let trade = this.trade;
 
     if (trade.creating()){
@@ -69,32 +94,54 @@ export class TradePage implements OnInit {
         trade.offererOther = this.option;
 
       //noinspection TypeScriptUnresolvedFunction
-      this.tradeService.offerTrade(trade).then((res: Response) => {
-        this.message = res.statusText;
+      this.tradeService.offerTrade(trade).then(msg => {
+        this.message = msg;
+        if (this.alert) {
+          console.log('clear alert ' + this.alert);
+          this.chatService.markAlertRead(this.alert);
+        }
+        else
+          console.log('no alert to clear.');
       });
 
-      this.close();
+      this.mask = true;
+      // this.close();
     }
     else if (trade.responding()){
+      console.log('Responding to trade ' + trade.id);
       if (this.isItem(this.option))
         trade.offereeItem = +this.option;
       else
         trade.offereeOther = this.option;
 
       //noinspection TypeScriptUnresolvedFunction
-      this.tradeService.counterofferTrade(trade).then((res: Response) => {
-        this.message = res.statusText;
+      this.tradeService.counterofferTrade(trade).then(msg => {
+        this.message = msg;
+        if (this.alert) {
+          console.log('clear alert ' + this.alert);
+          this.chatService.markAlertRead(this.alert);
+        }
+        else
+          console.log('no alert to clear.');
       });
 
-      this.close();
+      this.mask = true;
+      // this.close();
     }
     else if (trade.accepting()){
       //noinspection TypeScriptUnresolvedFunction
-      this.tradeService.acceptTrade(trade).then((res: Response) => {
-        this.message = res.statusText;
+      this.tradeService.acceptTrade(trade).then(msg => {
+        this.message = msg;
+        if (this.alert) {
+          console.log('clear alert ' + this.alert);
+          this.chatService.markAlertRead(this.alert);
+        }
+        else
+          console.log('no alert to clear.');
       });
 
-      this.close();
+      this.mask = true;
+      // this.close();
     }
   }
 
@@ -103,6 +150,10 @@ export class TradePage implements OnInit {
   }
 
   close() {
+    if (this.trade.accepted() || this.trade.rejected()){
+      this.chatService.markAlertRead(this.alert);
+    }
+
     this.viewCtrl.dismiss();
   }
 

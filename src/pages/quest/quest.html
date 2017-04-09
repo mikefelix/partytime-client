@@ -11,7 +11,12 @@
       Game has not started...
     </div>
   </div>
+
   <div *ngIf="started">
+    <div padding>
+      <b>Score</b>: {{player.score}}
+    </div>
+
     <div padding *ngIf="player">
       <!--<button ion-button (click)="removeLogin()">Change login</button>-->
       <div><b>Items and powers</b></div>
@@ -38,7 +43,7 @@
       <div>
         <ul style="list-style:none">
           <li *ngFor="let power of quest.powers" style="display:inline">
-            <ion-chip (click)="describeReq(power)">
+            <ion-chip (click)="describeReq(power, true)">
               <ion-icon name="body"></ion-icon>
               <ion-label>{{power.name}}</ion-label>
               <button *ngIf="power.found" ion-button clear color="dark">
@@ -47,7 +52,7 @@
             </ion-chip>
           </li>
           <li *ngFor="let item of quest.items" style="display:inline">
-            <ion-chip (click)="describeReq(item)">
+            <ion-chip (click)="describeReq(item, true)">
               <ion-icon name="build" color="secondary"></ion-icon>
               <ion-label>{{item.name}}</ion-label>
               <button *ngIf="item.found" ion-button clear color="dark">
@@ -69,7 +74,7 @@
       <div>
         <ul style="list-style:none">
           <li *ngFor="let power of sidequest.powers" style="display:inline">
-            <ion-chip (click)="describeReq(power)">
+            <ion-chip (click)="describeReq(power, true)">
               <ion-icon name="body"></ion-icon>
               <ion-label>{{power.name}}</ion-label>
               <button *ngIf="power.found" ion-button clear color="dark">
@@ -78,7 +83,7 @@
             </ion-chip>
           </li>
           <li *ngFor="let item of sidequest.items" style="display:inline">
-            <ion-chip (click)="describeReq(item)">
+            <ion-chip (click)="describeReq(item, true)">
               <ion-icon name="build" color="secondary"></ion-icon>
               <ion-label>{{item.name}}</ion-label>
               <button *ngIf="item.found" ion-button clear color="dark">

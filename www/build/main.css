@@ -24382,3 +24382,11 @@ ion-navbar.toolbar {
     padding-top: calc(16px + 20px);
   }
 }
+
+.poopover {
+  width: 90%;
+}
+
+ion-select {
+  max-width: 95%;
+}

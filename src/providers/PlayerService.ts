@@ -40,7 +40,13 @@ export class PlayerService implements OnInit {
       this.players[player] = undefined;
     }
 
-    if (this.players && this.players[player]){
+    if (player == 0){
+      //noinspection TypeScriptUnresolvedFunction
+      return new Promise((resolve, reject) => {
+        resolve(undefined);
+      });
+    }
+    else if (this.players && this.players[player]){
       //noinspection TypeScriptUnresolvedFunction
       return new Promise((resolve, reject) => {
         resolve(this.players[player]);

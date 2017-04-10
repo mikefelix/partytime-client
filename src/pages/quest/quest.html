@@ -6,7 +6,7 @@
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
-  <div *ngIf="!started">
+  <div *ngIf="started === false">
     <div padding>
       Game has not started...
     </div>
@@ -22,13 +22,13 @@
       <div><b>Items and powers</b></div>
       <ul style="list-style:none">
         <li *ngFor="let power of player.powers" style="display:inline">
-          <ion-chip (click)="describeReq(power)">
+          <ion-chip (click)="describePower(power)">
             <ion-icon name="body"></ion-icon>
             <ion-label>{{power.name}}</ion-label>
           </ion-chip>
         </li>
         <li *ngFor="let item of player.items" style="display:inline">
-          <ion-chip (click)="describeReq(item)">
+          <ion-chip (click)="describeItem(item)">
             <ion-icon name="build" color="secondary"></ion-icon>
             <ion-label>{{item.name}}</ion-label>
           </ion-chip>
@@ -43,7 +43,7 @@
       <div>
         <ul style="list-style:none">
           <li *ngFor="let power of quest.powers" style="display:inline">
-            <ion-chip (click)="describeReq(power, true)">
+            <ion-chip (click)="describePower(power, true)">
               <ion-icon name="body"></ion-icon>
               <ion-label>{{power.name}}</ion-label>
               <button *ngIf="power.found" ion-button clear color="dark">
@@ -52,7 +52,7 @@
             </ion-chip>
           </li>
           <li *ngFor="let item of quest.items" style="display:inline">
-            <ion-chip (click)="describeReq(item, true)">
+            <ion-chip (click)="describeItem(item, true)">
               <ion-icon name="build" color="secondary"></ion-icon>
               <ion-label>{{item.name}}</ion-label>
               <button *ngIf="item.found" ion-button clear color="dark">
@@ -62,8 +62,12 @@
           </li>
         </ul>
       </div>
-      <div *ngIf="quest.fulfilled">
-        <button ion-button clear color="dark">Complete!</button>
+      <div>Current reward: {{currentCompletionReward(sidequest)}} of {{maximumCompletionReward(sidequest)}} max</div>
+      <div *ngIf="currentCompletionReward(quest) > 0">
+        <button ion-button (click)=completeQuest(quest)>Complete quest</button>
+      </div>
+      <div *ngIf="currentCompletionReward(quest) == 0">
+        <button ion-button (click)=completeQuest(quest)>Abandon quest</button>
       </div>
     </div>
 
@@ -74,7 +78,7 @@
       <div>
         <ul style="list-style:none">
           <li *ngFor="let power of sidequest.powers" style="display:inline">
-            <ion-chip (click)="describeReq(power, true)">
+            <ion-chip (click)="describePower(power, true)">
               <ion-icon name="body"></ion-icon>
               <ion-label>{{power.name}}</ion-label>
               <button *ngIf="power.found" ion-button clear color="dark">
@@ -83,7 +87,7 @@
             </ion-chip>
           </li>
           <li *ngFor="let item of sidequest.items" style="display:inline">
-            <ion-chip (click)="describeReq(item, true)">
+            <ion-chip (click)="describeItem(item, true)">
               <ion-icon name="build" color="secondary"></ion-icon>
               <ion-label>{{item.name}}</ion-label>
               <button *ngIf="item.found" ion-button clear color="dark">
@@ -93,6 +97,7 @@
           </li>
         </ul>
       </div>
+      <div>Current reward: {{currentCompletionReward(sidequest)}} of {{maximumCompletionReward(sidequest)}} max</div>
     </div>
   </div>
 

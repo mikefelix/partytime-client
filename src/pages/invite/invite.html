@@ -1,0 +1,36 @@
+<div padding style="width:90%">
+  <div style="font-weight:bold">Quest invitation: {{otherPlayer.alias}}</div>
+
+  <div *ngIf="message">
+    <div padding>{{message}}</div>
+  </div>
+
+  <div *ngIf="!mask">
+    <div *ngIf="invite.creating()">
+      <div>Invite {{otherPlayer.alias}} to join your main quest?</div>
+      <button ion-button (click)="proposeInvite()" block>Invite</button>
+    </div>
+
+    <div *ngIf="invite.responding()">
+      <div>{{otherPlayer.alias}} invites you to join their quest! If you accept, this quest will become your new side quest. (You can only have one side quest!)</div>
+      <button ion-button (click)="cancelInvite()" block>Decline</button>
+      <button ion-button (click)="proposeInvite()" block>Accept</button>
+    </div>
+
+    <div *ngIf="invite.accepted()">
+      <div>Invite accepted.
+        <!--{{invitee.alias}} has joined the quest!-->
+      </div>
+    </div>
+
+    <div *ngIf="invite.rejected()">
+      <div>Invite rejected.
+        <!--<div>{{invitee.alias}} wasn't interested in the quest.</div>-->
+      </div>
+    </div>
+
+  </div>
+
+  <button ion-button (click)="close()" block>Close</button>
+
+</div>

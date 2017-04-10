@@ -6,11 +6,6 @@
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
-  <!--<div *ngIf="!started">-->
-    <!--<div padding>-->
-      <!--Game has not started...-->
-    <!--</div>-->
-  <!--</div>-->
   <div padding>
     <div *ngFor="let player of players" padding>
       <h3>{{player.alias}} ({{player.name}})</h3>

@@ -6,6 +6,8 @@ import { AlertController } from 'ionic-angular';
 import {LoginService} from "../../providers/LoginService";
 import {Player} from "../../providers/Player";
 import {PlayerService} from "../../providers/PlayerService";
+import {Item} from "../../providers/Item";
+import {Power} from "../../providers/Power";
 
 @Component({
   selector: 'page-quest',
@@ -104,15 +106,110 @@ export class QuestPage implements OnInit {
     })
   }
 
-  describeReq(req){
-    this.alertCtrl.create({
-      title: req.name,
-      subTitle: req.description,
-      buttons: ['Dismiss']
-    }).present();
+  describeItem(req: Item){
+    this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
+      this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
+        let rumored: string = rumor1 ? rumor1.alias : '';
+        if (rumor2) rumored += ', ' + rumor2.alias;
+
+        this.alertCtrl.create({
+          title: req.name,
+          subTitle: rumored ? `${req.description}\nRumored possessors: ${rumored}` : req.description,
+          buttons: ['Dismiss']
+        }).present();
+      });
+    });
+  }
+
+  describePower(req: Power){
+    this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
+      this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
+        let rumored: string = rumor1 ? rumor1.alias : '';
+        if (rumor2) rumored += ', ' + rumor2.alias;
+
+        this.alertCtrl.create({
+          title: req.name,
+          subTitle: rumored ? `${req.description}\nRumored possessors: ${rumored}` : req.description,
+          buttons: ['Dismiss']
+        }).present();
+      });
+    });
   }
 
   removeLogin(){
     localStorage.removeItem("player");
+  }
+
+  completeQuest(quest: Quest){
+    this.questService.completeQuest(quest).then((newQuest: Quest) => {
+      this.quest = newQuest;
+    });
+  }
+
+  maximumCompletionReward(quest: Quest) {
+    let itemsNeeded = quest.items.length;
+    let powersNeeded = quest.powers.length;
+    let itemsFound = quest.items.filter(it => it.found).length;
+    let powersFound = quest.powers.filter(it => it.found).length;
+    let reqsNeeded = itemsNeeded + powersNeeded;
+    let reqsFound = itemsFound + powersFound;
+    let base = reqsFound * 10;
+
+    if (reqsNeeded >= 5) {
+        return base + 40;
+    }
+    else if (reqsNeeded == 4) {
+        return base + 30;
+    }
+    else {
+        return base + 20;
+    }
+  }
+
+  currentCompletionReward(quest: Quest){
+    let itemsNeeded = quest.items.length;
+    let powersNeeded = quest.powers.length;
+    let itemsFound = quest.items.filter(it => it.found).length;
+    let powersFound = quest.powers.filter(it => it.found).length;
+    let missingItems = itemsNeeded - itemsFound;
+    let missingPowers = powersNeeded - powersFound;
+    let missingReqs = missingItems + missingPowers;
+    let reqsNeeded = itemsNeeded + powersNeeded;
+    let reqsFound = itemsFound + powersFound;
+    let base = reqsFound * 10;
+
+    if (reqsNeeded >= 5) {
+      if (missingReqs == 0) {
+        return base + 40;
+      }
+      else if (missingReqs == 1) {
+        return base + 15;
+      }
+      else if (missingReqs == 2) {
+        return base;
+      }
+      else {
+        return 0;
+      }
+    }
+    else if (reqsNeeded == 4) {
+      if (missingReqs == 0) {
+        return base + 30;
+      }
+      else if (missingReqs == 1) {
+        return base + 10;
+      }
+      else {
+        return 0;
+      }
+    }
+    else {
+      if (missingReqs == 0) {
+        return base + 20;
+      }
+      else {
+        return 0;
+      }
+    }
   }
 }

@@ -31,6 +31,14 @@ export class QuestService implements OnInit {
       .toPromise()
   }
 
+  completeQuest(quest: Quest) {
+    return this.http.delete(`${AppSettings.API_URL}/games/1/players/${quest.master}/quest`)
+      .map(r => {
+        return r.json() as Quest;
+      })
+      .toPromise()
+  }
+
   gameIsStarted(){
     if (this.started){
       //noinspection TypeScriptUnresolvedFunction
@@ -45,7 +53,7 @@ export class QuestService implements OnInit {
         if (game && game.started)
           this.started = true;
 
-        return this.started
+        return this.started;
       })
       .toPromise()
   }

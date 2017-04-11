@@ -10,7 +10,8 @@ import {ChatService} from "../../providers/ChatService";
 import {Chat} from "../../providers/Chat";
 
 @Component({
-  templateUrl: 'tabs.html'
+  templateUrl: 'tabs.html',
+  providers: [ChatService, LoginService]
 })
 export class TabsPage implements OnInit {
   // this tells the tabs component which Pages
@@ -26,16 +27,24 @@ export class TabsPage implements OnInit {
   }
 
   ngOnInit(){
-    let player = this.loginService.getId();
-    this.checkForAlerts(this.chatService, player);
+    // this.checkForAlerts(this.chatService, player);
+    this.chatService.alertsSubject.subscribe(
+      alerts => {
+        this.alertNum = alerts && alerts.length > 0 ? alerts.length : undefined;
+      }
+    );
+
+    this.chatService.wakeUp();
   }
 
+/*
   checkForAlerts(svc, player){
     svc.getAlerts(player).then( (alerts: Chat[]) => {
       this.alertNum = alerts && alerts.length > 0 ? alerts.length : undefined;
       setTimeout(() => this.checkForAlerts(svc, player), 5000);
     });
   }
+*/
 
   showLogin(){
     let alert = this.alertCtrl.create({

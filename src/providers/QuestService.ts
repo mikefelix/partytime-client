@@ -50,8 +50,8 @@ export class QuestService implements OnInit {
     return this.http.get(`${AppSettings.API_URL}/games/1`)
       .map(r => {
         let game = r.json();
-        if (game && game.started)
-          this.started = true;
+        if (game && game.started !== undefined)
+          this.started = game.started;
 
         return this.started;
       })

@@ -12,12 +12,12 @@
         <div>{{chat.chat}}</div>
         <div style="float:right; font-size:0.9em" *ngIf="chat.poster">{{chat.posterName}}</div>
       </ion-item>
-
-      <ion-item>
-          <ion-input type="text" name="text" placeholder="Chat here" [(ngModel)]="enteredChat"></ion-input>
-      </ion-item>
     </ion-list>
-
-    <button ion-button type="submit" value="Post" (click)="postChat()" block>Post</button>
+    <ion-item>
+      <ion-input type="text" name="text" placeholder="Chat here" [(ngModel)]="enteredChat"></ion-input>
+    </ion-item>
+    <ion-item>
+      <button ion-button type="submit" value="Post" [disabled]="!enteredChat" (click)="postChat()" large block>Post</button>
+    </ion-item>
   </div>
 </ion-content>

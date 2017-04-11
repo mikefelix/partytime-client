@@ -8,10 +8,11 @@ import { AlertController } from 'ionic-angular';
 import {ChatService} from "../../providers/ChatService";
 import {Invite} from "../../providers/Invite";
 import {PlayerService} from "../../providers/PlayerService";
+import {LoginService} from "../../providers/LoginService";
 
 @Component({
   templateUrl: 'invite.html',
-  providers: [TradeService, ChatService],
+  providers: [TradeService, ChatService, LoginService],
 })
 export class InvitePage implements OnInit {
   player: Player;

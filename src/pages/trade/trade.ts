@@ -6,10 +6,11 @@ import {TradeService} from "../../providers/TradeService";
 import {Http, Response} from "@angular/http";
 import { AlertController } from 'ionic-angular';
 import {ChatService} from "../../providers/ChatService";
+import {LoginService} from "../../providers/LoginService";
 
 @Component({
   templateUrl: 'trade.html',
-  providers: [TradeService, ChatService],
+  providers: [TradeService, ChatService, LoginService],
 })
 export class TradePage implements OnInit {
   player: Player;

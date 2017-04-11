@@ -62,12 +62,12 @@
           </li>
         </ul>
       </div>
-      <div>Current reward: {{currentCompletionReward(sidequest)}} of {{maximumCompletionReward(sidequest)}} max</div>
+      <div>Current reward: {{currentCompletionReward(quest)}} of {{maximumCompletionReward(quest)}} max</div>
       <div *ngIf="currentCompletionReward(quest) > 0">
-        <button ion-button (click)=completeQuest(quest)>Complete quest</button>
+        <button ion-button (click)=completeQuest(quest) large block>Complete quest</button>
       </div>
       <div *ngIf="currentCompletionReward(quest) == 0">
-        <button ion-button (click)=completeQuest(quest)>Abandon quest</button>
+        <button ion-button (click)=completeQuest(quest) large block>Abandon quest</button>
       </div>
     </div>
 

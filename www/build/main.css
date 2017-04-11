@@ -24390,3 +24390,8 @@ ion-navbar.toolbar {
 ion-select {
   max-width: 95%;
 }
+
+.postButton {
+  position: fixed;
+  bottom: 5px;
+}

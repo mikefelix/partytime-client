@@ -110,11 +110,23 @@ export class QuestPage implements OnInit {
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
         let rumored: string = rumor1 ? rumor1.alias : '';
-        if (rumor2) rumored += ', ' + rumor2.alias;
+        if (rumor2) {
+          if (Math.random() < 0.5)
+            rumored += ' or ' + rumor2.alias;
+          else
+            rumored = rumor2.alias + ' or ' + rumored;
+        }
+
+        function rumoredDesc(){
+          if (Math.random() < 0.5)
+            return `${req.description}\n Rumor has it you might find this in the possession of ${rumored}.`;
+          else
+            return `${req.description}\n Possible owners: ${rumored}.`;
+        }
 
         this.alertCtrl.create({
           title: req.name,
-          subTitle: rumored ? `${req.description}\nRumored possessors: ${rumored}` : req.description,
+          subTitle: rumored ? rumoredDesc() : req.description,
           buttons: ['Dismiss']
         }).present();
       });
@@ -125,11 +137,23 @@ export class QuestPage implements OnInit {
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
         let rumored: string = rumor1 ? rumor1.alias : '';
-        if (rumor2) rumored += ', ' + rumor2.alias;
+        if (rumor2) {
+          if (Math.random() < 0.5)
+            rumored += ' or ' + rumor2.alias;
+          else
+            rumored = rumor2.alias + ' or ' + rumored;
+        }
+
+        function rumoredDesc(){
+          if (Math.random() < 0.5)
+            return `${req.description}\n Some say this power is possessed by ${rumored}.`;
+          else
+            return `${req.description}\n ${rumored} might have this power.`;
+        }
 
         this.alertCtrl.create({
           title: req.name,
-          subTitle: rumored ? `${req.description}\nRumored possessors: ${rumored}` : req.description,
+          subTitle: rumored ? rumoredDesc() : req.description,
           buttons: ['Dismiss']
         }).present();
       });
@@ -141,9 +165,46 @@ export class QuestPage implements OnInit {
   }
 
   completeQuest(quest: Quest){
-    this.questService.completeQuest(quest).then((newQuest: Quest) => {
-      this.quest = newQuest;
-    });
+    let itemsNeeded = quest.items.length;
+    let powersNeeded = quest.powers.length;
+    let itemsFound = quest.items.filter(it => it.found).length;
+    let powersFound = quest.powers.filter(it => it.found).length;
+    let reqsNeeded = itemsNeeded + powersNeeded;
+    let reqsFound = itemsFound + powersFound;
+    let title, desc;
+    if (this.maximumCompletionReward(quest) == 0){
+      title = 'Abandon quest';
+      desc = 'Abandon this quest for no points and get a new quest?';
+    }
+    else if (reqsNeeded > reqsFound){
+      title = 'Complete quest';
+      desc = 'Not quite there! Complete this quest for partial points and get a new one?';
+    }
+    else {
+      title = 'Complete quest';
+      desc = 'You have gathered all the requirements. Good job! Complete this quest?';
+    }
+
+    this.alertCtrl.create({
+      title: title,
+      subTitle: desc,
+      buttons: [
+        {
+          text: 'Ok',
+          handler: () => {
+            this.questService.completeQuest(quest).then((newQuest: Quest) => {
+              this.quest = newQuest;
+            });
+          }
+        },
+        {
+          text: 'Cancel',
+          handler: () => {
+          }
+        }
+      ]
+    }).present();
+
   }
 
   maximumCompletionReward(quest: Quest) {
@@ -153,7 +214,7 @@ export class QuestPage implements OnInit {
     let powersFound = quest.powers.filter(it => it.found).length;
     let reqsNeeded = itemsNeeded + powersNeeded;
     let reqsFound = itemsFound + powersFound;
-    let base = reqsFound * 10;
+    let base = reqsNeeded * 10;
 
     if (reqsNeeded >= 5) {
         return base + 40;

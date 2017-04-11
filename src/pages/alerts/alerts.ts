@@ -26,18 +26,24 @@ export class AlertsPage implements OnInit {
     this.alerts = [];
   }
 
-  ngOnInit():void {
+  ngOnInit() {
+    this.chatService.alertsSubject.subscribe(
+      alerts => {
+        this.alerts = alerts;
+      }
+    );
+
     this.playerService.getPlayer(this.loginService.getId()).then((player: Player) => {
       this.player = player;
-      this.refreshAlerts();
+      // this.refreshAlerts();
     });
   }
 
-  refreshAlerts(){
-    this.chatService.getAlerts(this.player.id, true).then((alerts: Chat[]) => {
-      this.alerts = alerts;
-    });
-  }
+  // refreshAlerts(){
+  //   this.chatService.getAlerts(this.player.id, true).then((alerts: Chat[]) => {
+  //     this.alerts = alerts;
+  //   });
+  // }
 
   handleClick(alert: Chat, event){
     if (!alert.poster && alert.poster == 0){

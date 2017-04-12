@@ -18,6 +18,6 @@
       <ion-input type="text" [(ngModel)]="heroName" name="heroName" [ngModelOptions]="{standalone: true}"></ion-input>
     </ion-item>
     <br/><br/>
-    <button ion-button type="submit" [disabled]="!formValid()" block>Join game</button>
+    <button ion-button type="submit" [disabled]="joining || !formValid()" block>Join game</button>
   </form>
 </ion-content>

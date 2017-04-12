@@ -12,6 +12,7 @@ export class AboutPage {
   message: string = "";
   playerName: string;
   heroName: string;
+  joining: boolean;
 
   constructor(public navCtrl: NavController, private playerService: PlayerService) {
   }
@@ -21,6 +22,8 @@ export class AboutPage {
       this.message = "Please enter both fields.";
       return;
     }
+
+    this.joining = true;
 
     //noinspection TypeScriptUnresolvedFunction
     this.playerService.createPlayer(this.playerName, this.heroName).then(

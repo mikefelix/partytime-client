@@ -43,7 +43,7 @@
       <div>
         <ul style="list-style:none">
           <li *ngFor="let power of quest.powers" style="display:inline">
-            <ion-chip (click)="describePower(power, true)">
+            <ion-chip (click)="describePower(power, !power.found)">
               <ion-icon name="body"></ion-icon>
               <ion-label>{{power.name}}</ion-label>
               <button *ngIf="power.found" ion-button clear color="dark">
@@ -52,7 +52,7 @@
             </ion-chip>
           </li>
           <li *ngFor="let item of quest.items" style="display:inline">
-            <ion-chip (click)="describeItem(item, true)">
+            <ion-chip (click)="describeItem(item, !power.found)">
               <ion-icon name="build" color="secondary"></ion-icon>
               <ion-label>{{item.name}}</ion-label>
               <button *ngIf="item.found" ion-button clear color="dark">
@@ -78,7 +78,7 @@
       <div>
         <ul style="list-style:none">
           <li *ngFor="let power of sidequest.powers" style="display:inline">
-            <ion-chip (click)="describePower(power, true)">
+            <ion-chip (click)="describePower(power, !item.found)">
               <ion-icon name="body"></ion-icon>
               <ion-label>{{power.name}}</ion-label>
               <button *ngIf="power.found" ion-button clear color="dark">
@@ -87,7 +87,7 @@
             </ion-chip>
           </li>
           <li *ngFor="let item of sidequest.items" style="display:inline">
-            <ion-chip (click)="describeItem(item, true)">
+            <ion-chip (click)="describeItem(item, !item.found)">
               <ion-icon name="build" color="secondary"></ion-icon>
               <ion-label>{{item.name}}</ion-label>
               <button *ngIf="item.found" ion-button clear color="dark">

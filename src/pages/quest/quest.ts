@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-
-import { QuestService } from "../../providers/QuestService";
-import { Quest } from "../../providers/Quest";
-import { AlertController } from 'ionic-angular';
+import {Component, OnInit} from "@angular/core";
+import {QuestService} from "../../providers/QuestService";
+import {Quest} from "../../providers/Quest";
+import {AlertController} from "ionic-angular";
 import {LoginService} from "../../providers/LoginService";
 import {Player} from "../../providers/Player";
 import {PlayerService} from "../../providers/PlayerService";
@@ -106,54 +105,62 @@ export class QuestPage implements OnInit {
     })
   }
 
-  describeItem(req: Item){
+  rumoredItemDesc(req: Item, rumored: string) {
+    if (Math.random() < 0.5)
+      return `${req.description}\n Rumor has it you might find this in the possession of ${rumored}.`;
+    else
+      return `${req.description}\n Possible owners: ${rumored}.`;
+  }
+
+  describeItem(req: Item, withRumors: boolean = false){
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
-        let rumored: string = rumor1 ? rumor1.alias : '';
-        if (rumor2) {
-          if (Math.random() < 0.5)
-            rumored += ' or ' + rumor2.alias;
-          else
-            rumored = rumor2.alias + ' or ' + rumored;
-        }
+        let rumored: string;
 
-        function rumoredDesc(){
-          if (Math.random() < 0.5)
-            return `${req.description}\n Rumor has it you might find this in the possession of ${rumored}.`;
-          else
-            return `${req.description}\n Possible owners: ${rumored}.`;
+        if (withRumors) {
+          rumored = rumor1 ? rumor1.alias : '';
+          if (rumor2) {
+            if (Math.random() < 0.5)
+              rumored += ' or ' + rumor2.alias;
+            else
+              rumored = rumor2.alias + ' or ' + rumored;
+          }
         }
 
         this.alertCtrl.create({
           title: req.name,
-          subTitle: rumored ? rumoredDesc() : req.description,
+          subTitle: rumored ? this.rumoredItemDesc(req, rumored) : req.description,
           buttons: ['Dismiss']
         }).present();
       });
     });
   }
 
-  describePower(req: Power){
+  rumoredPowerDesc(req: Power, rumored: string) {
+    if (Math.random() < 0.5)
+      return `${req.description}\n Some say this power is possessed by ${rumored}.`;
+    else
+      return `${req.description}\n ${rumored} might have this power.`;
+  }
+
+  describePower(req: Power, withRumors: boolean = false){
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
-        let rumored: string = rumor1 ? rumor1.alias : '';
-        if (rumor2) {
-          if (Math.random() < 0.5)
-            rumored += ' or ' + rumor2.alias;
-          else
-            rumored = rumor2.alias + ' or ' + rumored;
-        }
+        let rumored: string;
+        if (withRumors) {
+          rumored = rumor1 ? rumor1.alias : '';
+          if (rumor2) {
+            if (Math.random() < 0.5)
+              rumored += ' or ' + rumor2.alias;
+            else
+              rumored = rumor2.alias + ' or ' + rumored;
+          }
 
-        function rumoredDesc(){
-          if (Math.random() < 0.5)
-            return `${req.description}\n Some say this power is possessed by ${rumored}.`;
-          else
-            return `${req.description}\n ${rumored} might have this power.`;
         }
 
         this.alertCtrl.create({
           title: req.name,
-          subTitle: rumored ? rumoredDesc() : req.description,
+          subTitle: rumored ? this.rumoredPowerDesc(req, rumored) : req.description,
           buttons: ['Dismiss']
         }).present();
       });

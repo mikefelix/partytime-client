@@ -23,7 +23,7 @@ export class QuestPage implements OnInit {
   sidequestReward: number;
   sidequestRewardMax: number;
   sidequestMaster: string;
-  sidequestAllies: string[];
+  allies: string[];
   player: Player;
   errorMessage: string;
 
@@ -33,13 +33,22 @@ export class QuestPage implements OnInit {
     this.sidequest = new Quest(0);
     this.player = new Player(0);
     this.sidequestMaster = "your ally";
-    this.sidequestAllies = [];
+    this.allies = [];
 
     this.questService.questSubject.subscribe(
       quest => {
         console.log('refreshed with quest ' + quest.id);
         this.quest = quest;
         this.computeQuestReward();
+
+        if (quest.allies){
+          for (let i = 0; i < quest.allies.length; i++){
+            let ally = quest.allies[i];
+            this.playerService.getPlayer(ally).then((p: Player) => {
+              this.allies[i] = p.alias;
+            });
+          }
+        }
       }
     );
 
@@ -57,16 +66,6 @@ export class QuestPage implements OnInit {
             if (p)
               this.sidequestMaster = p.alias;
           });
-
-          if (this.sidequest.allies){
-            for (let i = 0; i < this.sidequest.allies.length; i++){
-              let ally = this.sidequest.allies[i];
-              this.playerService.getPlayer(ally).then((p: Player) => {
-                console.log(`${p.alias} is an ally`);
-                this.sidequestAllies[i] = p.alias;
-              });
-            }
-          }
         }
       }
     );
@@ -345,11 +344,13 @@ export class QuestPage implements OnInit {
   }
 
   revealHero(player){
-    this.alertCtrl.create({
-      title: player.name,
-      subTitle: `Sources reveal that the secret identity of ${player.alias} is: ${player.name}!`,
-      buttons: ['Dismiss']
-    }).present();
+    this.playerService.getPlayer(player).then((p: Player) => {
+      this.alertCtrl.create({
+        title: player.name,
+        subTitle: `Sources reveal that the secret identity of ${p.alias} is: ${p.name}!`,
+        buttons: ['Dismiss']
+      }).present();
+    });
   }
 
   computeQuestReward(){

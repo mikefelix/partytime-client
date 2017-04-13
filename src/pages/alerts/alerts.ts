@@ -95,6 +95,13 @@ export class AlertsPage implements OnInit {
         let reward = +match[2];
         this.describeCompleteQuest(questId, reward, true, alert.id, event);
       }
+
+      else if (/^Ally abandoned quest/.test(alert.chat)){
+        let match = alert.chat.match(/\{([0-9]+)\/([0-9]+)\}$/);
+        let allyId = +match[1];
+        this.describeAbandonment(allyId, alert.id, event);
+      }
+
     }
   }
 
@@ -186,7 +193,9 @@ export class AlertsPage implements OnInit {
         buttons: [
           {
             text: 'Good job, me!',
-            handler: () => {}
+            handler: () => {
+              this.chatService.markAlertRead(alertId);
+            }
           }
         ]
       }).present();
@@ -212,10 +221,31 @@ export class AlertsPage implements OnInit {
     });
   }
 
-  cleanedMsg(chat){
-    console.log('cleaned: ');
-    console.dir(chat);
+  describeAbandonment(inviteId, alertId, ev){
+    //noinspection TypeScriptUnresolvedFunction
+    this.tradeService.getInvite(this.player.id, inviteId, true).then( (_invite: Invite) => {
+      let invite = new Invite(0);
+      invite.init(_invite);
 
+      this.playerService.getPlayer(invite.invitee).then( (otherPlayer: Player) => {
+
+        this.alertCtrl.create({
+          title: 'They left you',
+          subTitle: `${otherPlayer.alias} has abandoned your quest!`,
+          buttons: [
+            {
+              text: 'Not cool',
+              handler: () => {
+                this.chatService.markAlertRead(alertId);
+              }
+            }
+          ]
+        }).present();
+      });
+    });
+  }
+
+  cleanedMsg(chat){
     if (chat.poster && chat.poster != 0)
       return chat.chat;
 

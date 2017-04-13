@@ -75,6 +75,10 @@ export class ChatService {
       this.questService.refreshQuest(playerId);
       this.questService.refreshSidequest(playerId);
     }
+
+    else if (/^Ally abandoned quest/.test(alert.chat)){
+      this.questService.refreshQuest(playerId);
+    }
   }
 
   markAlertRead(id: number) {

@@ -78,7 +78,7 @@
         <li *ngFor="let ally of quest.allies; let i = index;" style="display:inline">
           <ion-chip (click)="revealHero(ally)">
             <ion-icon name="body" color="dark"></ion-icon>
-            <ion-label>{{sidequestAllies[i]}}</ion-label>
+            <ion-label>{{allies[i]}}</ion-label>
           </ion-chip>
         </li>
       </div>

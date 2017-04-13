@@ -62,6 +62,7 @@ export class QuestPage implements OnInit {
             for (let i = 0; i < this.sidequest.allies.length; i++){
               let ally = this.sidequest.allies[i];
               this.playerService.getPlayer(ally).then((p: Player) => {
+                console.log(`${p.alias} is an ally`);
                 this.sidequestAllies[i] = p.alias;
               });
             }
@@ -238,7 +239,8 @@ export class QuestPage implements OnInit {
           text: 'Ok',
           handler: () => {
             if (quest == this.sidequest){
-              this.questService.leaveSidequest(quest).then((newQuest: Quest) => {
+              console.log('leaving sidequest ' + quest.id);
+              this.questService.leaveSidequest(this.player.id).then((newQuest: Quest) => {
                 this.quest = newQuest;
               });
             }

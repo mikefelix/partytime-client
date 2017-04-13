@@ -54,8 +54,8 @@ export class QuestService implements OnInit {
       .toPromise()
   }
 
-  leaveSidequest(quest: Quest) {
-    return this.http.delete(`${AppSettings.API_URL}/games/1/players/${quest.master}/sidequest`)
+  leaveSidequest(player: number) {
+    return this.http.delete(`${AppSettings.API_URL}/games/1/players/${player}/sidequest`)
       .map(r => {
         return r.json() as Quest;
       })

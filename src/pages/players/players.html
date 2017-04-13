@@ -41,7 +41,6 @@
             <ion-icon name="body" color="dark"></ion-icon>
             <ion-label>{{player.alias}} ({{player.score}})</ion-label>
           </ion-chip>
-          <div>{{player.name}}</div>
 
           <span *ngIf="started">
             <button ion-button (click)="initiateTrade(player, $event)">

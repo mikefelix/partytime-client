@@ -241,7 +241,7 @@ export class QuestPage implements OnInit {
             if (quest == this.sidequest){
               console.log('leaving sidequest ' + quest.id);
               this.questService.leaveSidequest(this.player.id).then((newQuest: Quest) => {
-                this.quest = newQuest;
+                this.sidequest = newQuest;
               });
             }
             else {

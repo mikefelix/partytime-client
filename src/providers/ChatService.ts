@@ -9,6 +9,8 @@ import {Chat} from "./Chat";
 import {AppSettings} from "./AppSettings";
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {LoginService} from "./LoginService";
+import {QuestService} from "./QuestService";
+import {PlayerService} from "./PlayerService";
 
 @Injectable()
 export class ChatService {
@@ -16,11 +18,11 @@ export class ChatService {
 
   public alertsSubject: BehaviorSubject<Chat[]> = new BehaviorSubject<Chat[]>([]);
 
-  constructor(private http: Http, private loginService: LoginService) {
+  constructor(private http: Http, private loginService: LoginService, private questService: QuestService, private playerService: PlayerService) {
   }
 
-/*
-  subscribeChats(): Observable<Comment[]> {
+  /*
+   subscribeChats(): Observable<Comment[]> {
     return this.http.get(this.chatsUrl)
       .map((res: Response) => res.json() || {})
       .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
@@ -45,10 +47,33 @@ export class ChatService {
       .map((res:Response) => {
         let alerts = (res.json() as Chat[]) || [];
         this.alertsSubject.next(alerts);
+        for (let alert of alerts){
+          this.respondToServerEvents(alert);
+        }
+
         setTimeout(() => this.pollAlerts(http), 5000);
       })
       .catch((error:any) => Observable.throw(error.json().error || 'Server error'))
       .toPromise();
+  }
+
+  respondToServerEvents(alert: Chat){
+    let playerId = this.loginService.getId();
+    if (/^Quest invitation accepted/.test(alert.chat)) {
+      this.questService.refreshQuest(playerId);
+      this.questService.refreshSidequest(playerId);
+    }
+
+    else if (/^Trade completed/.test(alert.chat)) {
+      this.playerService.getPlayer(playerId, true);
+      this.questService.refreshQuest(playerId);
+      this.questService.refreshSidequest(playerId);
+    }
+
+    else if (/^Quest completed/.test(alert.chat)) {
+      this.questService.refreshQuest(playerId);
+      this.questService.refreshSidequest(playerId);
+    }
   }
 
   markAlertRead(id: number) {

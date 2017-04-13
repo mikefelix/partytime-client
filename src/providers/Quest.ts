@@ -8,7 +8,12 @@ export class Quest {
   items: Item[];
   powers: Power[];
 
-  constructor(){
+  constructor(id: number){
+    this.id = id;
+    this.master = 0;
+    this.items = [];
+    this.powers = [];
+    this.name = this.description = '';
   }
 
 }

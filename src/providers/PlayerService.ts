@@ -1,5 +1,5 @@
 import {Injectable, OnInit} from "@angular/core";
-import {Http} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import {Quest} from "./Quest";
 import {Player} from "./Player";
 import "rxjs/Rx";
@@ -7,11 +7,15 @@ import "rxjs/add/operator/toPromise";
 import {Score} from "./Score";
 import {AppSettings} from "./AppSettings";
 import {Observable} from 'rxjs/Observable';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class PlayerService implements OnInit {
-  players: Array<Player>;
+  players: Array<Player> = [];
   scores: Array<Score>;
+
+  public currentPlayerSubject: BehaviorSubject<Player> = new BehaviorSubject<Player>(new Player(0));
+  public otherPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject<Player[]>([]);
 
   constructor(private http: Http) {
   }
@@ -21,6 +25,23 @@ export class PlayerService implements OnInit {
       .map(r => {
         this.players = r.json() as Player[];
       })
+  }
+
+  wakeUp(){
+    // setTimeout(() => this.pollAlerts(this.http), 5000);
+    this.pollPlayers(this.http);
+  }
+
+  pollPlayers(http: Http){
+    //noinspection TypeScriptUnresolvedFunction
+    http.get(`${AppSettings.API_URL}/games/1/players`)
+      .map((res: Response) => {
+        let players = (res.json() as Player[]) || [];
+        this.otherPlayersSubject.next(players);
+        setTimeout(() => this.pollPlayers(http), 30000);
+      })
+      .catch((error:any) => Observable.throw(error.json().error || 'Server error'))
+      .toPromise();
   }
 
   createPlayer(playerName: string, heroName: string){
@@ -35,31 +56,36 @@ export class PlayerService implements OnInit {
       .toPromise()
   }
 
-  getPlayer(player: number, refresh = false) {
-    if (refresh){
-      this.players[player] = undefined;
+  getPlayer(id: number, refresh = false) {
+    if (refresh && id){
+      this.players[id] = undefined;
     }
 
-    if (player == 0){
+    if (id === 0 || id === undefined){
       //noinspection TypeScriptUnresolvedFunction
       return new Promise((resolve, reject) => {
         resolve(undefined);
       });
     }
-    else if (this.players && this.players[player]){
+
+    if (this.players && this.players[id]){
       //noinspection TypeScriptUnresolvedFunction
       return new Promise((resolve, reject) => {
-        resolve(this.players[player]);
+        resolve(this.players[id]);
       });
     }
 
-    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}`)
+    //noinspection TypeScriptUnresolvedFunction
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${id}`)
       .map(r => {
-        return r.json() as Player;
+        let player = r.json() as Player;
+        this.players[id] = player;
+        this.currentPlayerSubject.next(player);
+        return player;
       })
       .toPromise()
   }
-
+/*
   getScores(refresh = false){
     if (refresh)
       this.scores = undefined;
@@ -73,19 +99,26 @@ export class PlayerService implements OnInit {
 
     return this.http.get(`${AppSettings.API_URL}/games/1/scores`)
       .map(r => {
-        return r.json() as Score[];
+        let scores = r.json() as Score[];
+        this.scores = scores;
+        return scores;
       })
       .toPromise()
   }
 
   getPlayersExcept(except: number){
+    console.log('GPE ' + except);
     return this.http.get(`${AppSettings.API_URL}/games/1/players`)
       .map(r => {
         let arr = r.json() as Player[];
         arr = arr.filter( p => p.id != except );
+        for (let p of arr){
+          this.players[p.id] = p;
+        }
+
         return arr;
       })
       .toPromise()
-  }
+  }*/
 
 }

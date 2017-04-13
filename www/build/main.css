@@ -24383,12 +24383,15 @@ ion-navbar.toolbar {
   }
 }
 
-.poopover {
-  width: 90%;
-}
-
 ion-select {
   max-width: 95%;
+}
+
+.popover-content {
+  top: 120px !important;
+  left: 20px !important;
+  min-width: 80% !important;
+  width: 80% !important;
 }
 
 .postButton {

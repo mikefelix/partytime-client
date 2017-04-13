@@ -1,26 +1,62 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Heroes</ion-title>
+    <ion-title>Them</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
+
+  <ion-segment [(ngModel)]="selectedSort">
+    <ion-segment-button value="alpha">Alphabetical</ion-segment-button>
+    <ion-segment-button value="score">By score</ion-segment-button>
+  </ion-segment>
+
   <div padding>
-    <div *ngFor="let player of players" padding>
-      <h3>{{player.alias}} ({{player.name}})</h3>
-      <div>Score: {{player.score}} points</div>
-      <div *ngIf="started">
-        <button ion-button (click)="initiateTrade(player, $event)">
-          <ion-label>Trade</ion-label>
-          <ion-icon name="swap"></ion-icon>
-        </button>
-        <button ion-button (click)="invite(player, $event)">
-          <ion-label>Invite</ion-label>
-          <ion-icon name="megaphone"></ion-icon>
-        </button>
+
+    <div [ngSwitch]="selectedSort">
+      <div *ngSwitchCase="'alpha'">
+        <div *ngFor="let player of players" padding>
+          <ion-chip (click)="revealHero(player)">
+            <ion-icon name="body" color="dark"></ion-icon>
+            <ion-label>{{player.alias}} ({{player.score}})</ion-label>
+          </ion-chip>
+
+          <span *ngIf="started">
+            <button ion-button (click)="initiateTrade(player, $event)">
+              <ion-label>Trade</ion-label>
+              <ion-icon name="swap"></ion-icon>
+            </button>
+            <button ion-button (click)="invite(player, $event)">
+              <ion-label>Invite</ion-label>
+              <ion-icon name="megaphone"></ion-icon>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'score'">
+        <div *ngFor="let player of scorePlayers" padding>
+          <ion-chip (click)="revealHero(player)">
+            <ion-icon name="body" color="dark"></ion-icon>
+            <ion-label>{{player.alias}} ({{player.score}})</ion-label>
+          </ion-chip>
+          <div>{{player.name}}</div>
+
+          <span *ngIf="started">
+            <button ion-button (click)="initiateTrade(player, $event)">
+              <ion-label>Trade</ion-label>
+              <ion-icon name="swap"></ion-icon>
+            </button>
+            <button ion-button (click)="invite(player, $event)">
+              <ion-label>Invite</ion-label>
+              <ion-icon name="megaphone"></ion-icon>
+            </button>
+          </span>
+        </div>
       </div>
     </div>
   </div>
+
 
 </ion-content>

@@ -1,38 +1,61 @@
 import {Injectable, OnInit} from "@angular/core";
 import {Http} from "@angular/http";
 import {Quest} from "./Quest";
-import {Player} from "./Player";
 import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 import {AppSettings} from "./AppSettings";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class QuestService implements OnInit {
   started: boolean;
+  public questSubject: BehaviorSubject<Quest> = new BehaviorSubject<Quest>(new Quest(0));
+  public sidequestSubject: BehaviorSubject<Quest> = new BehaviorSubject<Quest>(new Quest(0));
+
   constructor(private http: Http) {
   }
 
   ngOnInit(){
   }
 
-  getQuestForPlayer(player: number, refresh = false) {
-    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/quest`)
+  getQuest(player: number, quest: number) {
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/quest/${quest}`)
       .map(r => {
         return r.json() as Quest;
       })
       .toPromise()
   }
 
-  getSidequestForPlayer(player: number, refresh = false) {
+  refreshQuest(player: number) {
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/quest`)
+      .map(r => {
+        let quest = r.json() as Quest;
+        this.questSubject.next(quest);
+        return quest;
+      })
+      .toPromise()
+  }
+
+  refreshSidequest(player: number) {
     return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/sidequest`)
       .map(r => {
-        return r.json() as Quest;
+        let quest = r.json() as Quest;
+        this.sidequestSubject.next(quest);
+        return quest;
       })
       .toPromise()
   }
 
   completeQuest(quest: Quest) {
     return this.http.delete(`${AppSettings.API_URL}/games/1/players/${quest.master}/quest`)
+      .map(r => {
+        return r.json() as Quest;
+      })
+      .toPromise()
+  }
+
+  leaveSidequest(quest: Quest) {
+    return this.http.delete(`${AppSettings.API_URL}/games/1/players/${quest.master}/sidequest`)
       .map(r => {
         return r.json() as Quest;
       })

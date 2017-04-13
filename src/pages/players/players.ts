@@ -16,15 +16,19 @@ import {InvitePage} from "../invite/invite";
 export class PlayersPage implements OnInit {
   started: boolean;
   players: Player[];
+  scorePlayers: Player[];
   player: Player;
+
+  selectedSort: string = 'alpha';
 
   constructor(private playerService: PlayerService, private questService: QuestService, private popoverCtrl: PopoverController,
               private alertCtrl: AlertController, private loginService: LoginService) {
-    this.players = [];
+    this.players = this.scorePlayers = [];
     this.player = {
         id: +localStorage.getItem("player"),
         name: "",
         alias: "",
+        score: 0,
         items: [],
         powers: []
       };
@@ -36,19 +40,39 @@ export class PlayersPage implements OnInit {
       return;
 
     //noinspection TypeScriptUnresolvedFunction
-    this.playerService.getPlayersExcept(playerId).then(p => {
-        this.players = p;
-    });
+    // this.playerService.getPlayersExcept(playerId).then(p => {
+    //     this.players = p;
+    // });
 
     //noinspection TypeScriptUnresolvedFunction
-    this.playerService.getPlayer(playerId).then((p: Player) => {
-        this.player = p;
-    });
+    // this.playerService.getPlayer(playerId).then((p: Player) => {
+    //     this.player = p;
+    // });
 
     this.questService.gameIsStarted().then( (started: boolean) => {
       this.started = started;
     });
 
+    this.playerService.currentPlayerSubject.subscribe(
+      player => {
+        this.player = player;
+      }
+    );
+
+    this.playerService.otherPlayersSubject.subscribe(
+      (players: Player[]) => {
+        this.players = players;
+        this.scorePlayers = players.slice(0).sort((a: Player, b: Player) => a.score < b.score ? 1 : (b.score < a.score ? -1 : 0));
+      }
+    );
+  }
+
+  revealHero(player){
+    this.alertCtrl.create({
+      title: player.name,
+      subTitle: `Sources reveal that the secret identity of ${player.alias} is: ${player.name}!`,
+      buttons: ['Dismiss']
+    }).present();
   }
 
   describeReq(req){

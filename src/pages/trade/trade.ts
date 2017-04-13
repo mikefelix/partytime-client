@@ -7,10 +7,12 @@ import {Http, Response} from "@angular/http";
 import { AlertController } from 'ionic-angular';
 import {ChatService} from "../../providers/ChatService";
 import {LoginService} from "../../providers/LoginService";
+import {QuestService} from "../../providers/QuestService";
+import {PlayerService} from "../../providers/PlayerService";
 
 @Component({
   templateUrl: 'trade.html',
-  providers: [TradeService, ChatService, LoginService],
+  providers: [TradeService, ChatService, LoginService, QuestService, PlayerService],
 })
 export class TradePage implements OnInit {
   player: Player;
@@ -24,7 +26,9 @@ export class TradePage implements OnInit {
   mask: boolean = false;
 
   constructor(private params: NavParams, public viewCtrl: ViewController, public tradeService: TradeService,
-              public alertCtrl: AlertController, public chatService: ChatService) {
+              public alertCtrl: AlertController, public chatService: ChatService, public questService: QuestService,
+              public playerService: PlayerService) {
+
     // this.options;// = [];
     this.player = params.get('player');
     this.otherPlayer = params.get('otherPlayer');
@@ -101,8 +105,6 @@ export class TradePage implements OnInit {
           console.log('clear alert ' + this.alert);
           this.chatService.markAlertRead(this.alert);
         }
-        else
-          console.log('no alert to clear.');
       });
 
       this.mask = true;
@@ -122,8 +124,6 @@ export class TradePage implements OnInit {
           console.log('clear alert ' + this.alert);
           this.chatService.markAlertRead(this.alert);
         }
-        else
-          console.log('no alert to clear.');
       });
 
       this.mask = true;
@@ -137,8 +137,11 @@ export class TradePage implements OnInit {
           console.log('clear alert ' + this.alert);
           this.chatService.markAlertRead(this.alert);
         }
-        else
-          console.log('no alert to clear.');
+
+        this.questService.refreshSidequest(this.player.id);
+        this.questService.refreshQuest(this.player.id);
+        this.playerService.getPlayer(this.player.id, true);
+
       });
 
       this.mask = true;

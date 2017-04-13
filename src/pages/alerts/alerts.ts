@@ -11,6 +11,9 @@ import {TradeService} from "../../providers/TradeService";
 import {Trade} from "../../providers/Trade";
 import {InvitePage} from "../invite/invite";
 import {Invite} from "../../providers/Invite";
+import {QuestService} from "../../providers/QuestService";
+import {Quest} from "../../providers/Quest";
+import {AlertController} from "ionic-angular";
 
 @Component({
   selector: 'page-alerts',
@@ -22,7 +25,8 @@ export class AlertsPage implements OnInit {
   enteredChat: string;
 
   constructor(public chatService: ChatService, private popoverCtrl: PopoverController, private playerService: PlayerService,
-              private loginService: LoginService, private tradeService: TradeService) {
+              private loginService: LoginService, private tradeService: TradeService, private questService: QuestService,
+              private alertCtrl: AlertController) {
     this.alerts = [];
   }
 
@@ -53,27 +57,43 @@ export class AlertsPage implements OnInit {
         this.respondToInvite(inviteId, alert.id, event)
       }
 
-      if (/^Quest invitation (accepted|rejected)/.test(alert.chat)){
+      else if (/^Quest invitation (accepted|rejected)/.test(alert.chat)){
         let inviteId = +alert.chat.match(/\{([0-9]+)\}$/)[1];
         this.describeInvite(inviteId, alert.id, event)
       }
 
       // 2. Accept a trade invitation
-      if (/^Trade request/.test(alert.chat)){
+      else if (/^Trade request/.test(alert.chat)){
         let tradeId = +alert.chat.match(/\{([0-9]+)\}$/)[1];
         this.respondToTradeRequest(tradeId, alert.id, event);
       }
 
       // 3. Accept a trade response
-      if (/^Trade response/.test(alert.chat)){
+      else if (/^Trade response/.test(alert.chat)){
         let tradeId = +alert.chat.match(/\{([0-9]+)\}$/)[1];
         this.acceptOrRejectTrade(tradeId, alert.id, event);
       }
 
       // 4. Give info on a finished trade
-      if (/^Trade completed/.test(alert.chat)){
+      else if (/^Trade completed/.test(alert.chat)){
         let tradeId = +alert.chat.match(/\{([0-9]+)\}$/)[1];
         this.describeTrade(tradeId, alert.id, event);
+      }
+
+      // 5. Give info on a completed quest
+      else if (/^Quest completed/.test(alert.chat)){
+        let match = alert.chat.match(/\{([0-9]+)\/([0-9]+)\}$/);
+        let questId = +match[1];
+        let reward = +match[2];
+        this.describeCompleteQuest(questId, reward, false, alert.id, event);
+      }
+
+      // 5. Give info on a completed sidequest
+      else if (/^Sidequest completed/.test(alert.chat)){
+        let match = alert.chat.match(/\{([0-9]+)\/([0-9]+)\}$/);
+        let questId = +match[1];
+        let reward = +match[2];
+        this.describeCompleteQuest(questId, reward, true, alert.id, event);
       }
     }
   }
@@ -83,7 +103,7 @@ export class AlertsPage implements OnInit {
       let invite = new Invite(0);
       invite.init(_invite);
 
-      this.playerService.getPlayer(invite.invitee).then( (otherPlayer: Player) => {
+      this.playerService.getPlayer(invite.inviter).then( (otherPlayer: Player) => {
         let popover = this.popoverCtrl.create(InvitePage, {
           player: this.player,
           otherPlayer: otherPlayer,
@@ -153,6 +173,26 @@ export class AlertsPage implements OnInit {
 
         popover.present({ev});
       });
+    });
+  }
+
+  describeCompleteQuest(questId: number, reward: number, side: boolean, alertId, ev){
+    //noinspection TypeScriptUnresolvedFunction
+    this.questService.getQuest(this.player.id, questId).then( (quest: Quest) => {
+      this.chatService.markAlertRead(alertId);
+
+      this.alertCtrl.create({
+        title: 'Quest complete!',
+        subTitle: side ?
+          `You got ${reward} points for helping completed the quest: ${quest.name}` :
+          `You received ${reward} points for completing your quest: ${quest.name}`,
+        buttons: [
+          {
+            text: 'Good job, me!',
+            handler: () => {}
+          }
+        ]
+      }).present();
     });
   }
 

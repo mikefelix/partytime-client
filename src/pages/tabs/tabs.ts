@@ -8,10 +8,11 @@ import {LoginService} from "../../providers/LoginService";
 import {AlertsPage} from "../alerts/alerts";
 import {ChatService} from "../../providers/ChatService";
 import {Chat} from "../../providers/Chat";
+import {PlayerService} from "../../providers/PlayerService";
 
 @Component({
   templateUrl: 'tabs.html',
-  providers: [ChatService, LoginService]
+  providers: [ChatService, LoginService, PlayerService]
 })
 export class TabsPage implements OnInit {
   // this tells the tabs component which Pages
@@ -23,7 +24,8 @@ export class TabsPage implements OnInit {
 
   alertNum: number;
 
-  constructor(private loginService: LoginService, private alertCtrl: AlertController, public chatService: ChatService) {
+  constructor(private loginService: LoginService, private alertCtrl: AlertController, public chatService: ChatService,
+              private playerService: PlayerService) {
   }
 
   ngOnInit(){
@@ -35,6 +37,7 @@ export class TabsPage implements OnInit {
     );
 
     this.chatService.wakeUp();
+    this.playerService.wakeUp();
   }
 
 /*

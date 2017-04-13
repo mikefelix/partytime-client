@@ -6,8 +6,14 @@ export class Player {
   alias: string;
   items: Item[];
   powers: Power[];
+  score: number;
 
-  constructor() {
+  constructor(id: number) {
+    this.id = id;
+    this.name = this.alias = '';
+    this.score = 0;
+    this.items = [];
+    this.powers = [];
   }
 
 }

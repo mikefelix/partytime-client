@@ -1,18 +1,16 @@
 import {Component, OnInit} from "@angular/core";
 import {ViewController, NavParams} from "ionic-angular/index";
 import {Player} from "../../providers/Player";
-import {Trade} from "../../providers/Trade";
 import {TradeService} from "../../providers/TradeService";
-import {Http, Response} from "@angular/http";
-import { AlertController } from 'ionic-angular';
 import {ChatService} from "../../providers/ChatService";
 import {Invite} from "../../providers/Invite";
 import {PlayerService} from "../../providers/PlayerService";
 import {LoginService} from "../../providers/LoginService";
+import {QuestService} from "../../providers/QuestService";
 
 @Component({
   templateUrl: 'invite.html',
-  providers: [TradeService, ChatService, LoginService],
+  providers: [TradeService, ChatService, LoginService, QuestService, PlayerService],
 })
 export class InvitePage implements OnInit {
   player: Player;
@@ -20,13 +18,11 @@ export class InvitePage implements OnInit {
   alert: number;
   message: String;
   invite: Invite;
-  // invitee: Player;
-  // inviter: Player;
   inviteId: number;
   mask: boolean = false;
 
   constructor(private params: NavParams, public viewCtrl: ViewController, public tradeService: TradeService,
-              public chatService: ChatService) {
+              public chatService: ChatService, public questService: QuestService) {
     this.player = params.get('player') as Player;
     this.otherPlayer = params.get('otherPlayer') as Player;
     this.alert = params.get('alert') as number;
@@ -107,6 +103,8 @@ export class InvitePage implements OnInit {
         if (this.alert) {
           this.chatService.markAlertRead(this.alert);
         }
+
+        this.questService.refreshSidequest(this.player.id);
       });
 
       this.mask = true;

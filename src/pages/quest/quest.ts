@@ -14,41 +14,71 @@ import {Power} from "../../providers/Power";
 })
 export class QuestPage implements OnInit {
   started: boolean;
+
   quest: Quest;
+  questReward: number;
+  questRewardMax: number;
+
   sidequest: Quest;
-  player: Player;
+  sidequestReward: number;
+  sidequestRewardMax: number;
   sidequestAlly: string;
+
+  player: Player;
   errorMessage: string;
 
   constructor(private questService: QuestService, private playerService: PlayerService,
               private loginService: LoginService, public alertCtrl: AlertController) {
-    this.quest = {
-      id: 0,
-      master: 0,
-      name: '',
-      description: '',
-      items: [],
-      powers: []
-    };
+    this.quest = new Quest(0);
 
-    this.sidequest = {
-      id: 0,
-      master: 0,
-      name: '',
-      description: '',
-      items: [],
-      powers: []
-    };
+    this.sidequest = new Quest(0);
 
-    this.player = {
-      id: 0,
-      name: "",
-      alias: "",
-      items: [],
-      powers: []
-    };
+    this.player = new Player(0);
 
     this.sidequestAlly = "your ally";
+
+    this.questService.questSubject.subscribe(
+      quest => {
+        console.log('refreshed with quest ' + quest);
+        this.quest = quest;
+        this.computeQuestReward();
+      }
+    );
+
+    this.questService.sidequestSubject.subscribe(
+      quest => {
+        if (quest.id == 0){
+          this.sidequest = {
+            id: 0,
+            master: 0,
+            name: '',
+            description: '',
+            items: [],
+            powers: []
+          };
+          this.computeSidequestReward();
+        }
+        else {
+          this.sidequest = quest;
+          this.computeSidequestReward();
+          this.playerService.getPlayer(quest.master).then((p: Player) => {
+            if (p)
+              this.sidequestAlly = p.alias;
+          })
+        }
+      }
+    );
+
+    this.playerService.currentPlayerSubject.subscribe(
+      player => {
+        if (player.id == 0){
+          this.player = new Player(0);
+        }
+        else {
+          this.player = player;
+        }
+      }
+    )
   }
 
   ngOnInit() {
@@ -72,20 +102,22 @@ export class QuestPage implements OnInit {
   refreshPlayer() {
     //noinspection TypeScriptUnresolvedFunction
     this.playerService.getPlayer(this.player.id).then( (p: Player) => {
+      console.log('GP2 ' + this.player.id);
       this.player = p;
     });
   }
 
   refreshQuest(){
     //noinspection TypeScriptUnresolvedFunction
-    this.questService.getQuestForPlayer(this.player.id).then( (q: Quest) => {
-      this.quest = q;
+    this.questService.refreshQuest(this.player.id).then( (q: Quest) => {
+      // this.quest = q;
     })
   }
 
   refreshSidequest(){
     //noinspection TypeScriptUnresolvedFunction
-    this.questService.getSidequestForPlayer(this.player.id).then((q: Quest) => {
+    this.questService.refreshSidequest(this.player.id).then((q: Quest) => {
+/*
       if (q.id == 0){
         this.sidequest = {
           id: 0,
@@ -102,6 +134,7 @@ export class QuestPage implements OnInit {
           this.sidequestAlly = p.alias;
         })
       }
+*/
     })
   }
 
@@ -179,9 +212,14 @@ export class QuestPage implements OnInit {
     let reqsNeeded = itemsNeeded + powersNeeded;
     let reqsFound = itemsFound + powersFound;
     let title, desc;
-    if (this.maximumCompletionReward(quest) == 0){
+
+    if (quest == this.sidequest){
+      title = 'Leave quest';
+      desc = 'Leave this quest?';
+    }
+    else if (this.currentCompletionReward(quest) <= 0){
       title = 'Abandon quest';
-      desc = 'Abandon this quest for no points and get a new quest?';
+      desc = 'Abandon this quest for -5 points and get a new quest?';
     }
     else if (reqsNeeded > reqsFound){
       title = 'Complete quest';
@@ -199,9 +237,16 @@ export class QuestPage implements OnInit {
         {
           text: 'Ok',
           handler: () => {
-            this.questService.completeQuest(quest).then((newQuest: Quest) => {
-              this.quest = newQuest;
-            });
+            if (quest == this.sidequest){
+              this.questService.leaveSidequest(quest).then((newQuest: Quest) => {
+                this.quest = newQuest;
+              });
+            }
+            else {
+              this.questService.completeQuest(quest).then((newQuest: Quest) => {
+                this.quest = newQuest;
+              });
+            }
           }
         },
         {
@@ -214,7 +259,10 @@ export class QuestPage implements OnInit {
 
   }
 
-  maximumCompletionReward(quest: Quest) {
+  maximumCompletionReward(quest: Quest, side: Boolean = false) {
+    if (!quest.items || !quest.powers)
+      return 0;
+
     let itemsNeeded = quest.items.length;
     let powersNeeded = quest.powers.length;
     let itemsFound = quest.items.filter(it => it.found).length;
@@ -222,6 +270,9 @@ export class QuestPage implements OnInit {
     let reqsNeeded = itemsNeeded + powersNeeded;
     let reqsFound = itemsFound + powersFound;
     let base = reqsNeeded * 10;
+
+    if (side)
+      return base;
 
     if (reqsNeeded >= 5) {
         return base + 40;
@@ -234,7 +285,10 @@ export class QuestPage implements OnInit {
     }
   }
 
-  currentCompletionReward(quest: Quest){
+  currentCompletionReward(quest: Quest, side: Boolean = false){
+    if (!quest.items || !quest.powers)
+      return 0;
+
     let itemsNeeded = quest.items.length;
     let powersNeeded = quest.powers.length;
     let itemsFound = quest.items.filter(it => it.found).length;
@@ -244,7 +298,14 @@ export class QuestPage implements OnInit {
     let missingReqs = missingItems + missingPowers;
     let reqsNeeded = itemsNeeded + powersNeeded;
     let reqsFound = itemsFound + powersFound;
+
+    if (reqsFound == 0)
+      return -5;
+
     let base = reqsFound * 10;
+
+    if (side)
+      return base;
 
     if (reqsNeeded >= 5) {
       if (missingReqs == 0) {
@@ -279,5 +340,23 @@ export class QuestPage implements OnInit {
         return 0;
       }
     }
+  }
+
+  revealHero(player){
+    this.alertCtrl.create({
+      title: player.name,
+      subTitle: `Sources reveal that the secret identity of ${player.alias} is: ${player.name}!`,
+      buttons: ['Dismiss']
+    }).present();
+  }
+
+  computeQuestReward(){
+    this.questReward = this.currentCompletionReward(this.quest);
+    this.questRewardMax = this.maximumCompletionReward(this.quest);
+  }
+
+  computeSidequestReward(){
+    this.sidequestReward = this.currentCompletionReward(this.sidequest);
+    this.sidequestRewardMax = this.maximumCompletionReward(this.sidequest);
   }
 }

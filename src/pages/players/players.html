@@ -22,7 +22,7 @@
             <ion-label>{{player.alias}} ({{player.score}})</ion-label>
           </ion-chip>
 
-          <span *ngIf="started">
+          <div *ngIf="started">
             <button ion-button (click)="initiateTrade(player, $event)">
               <ion-label>Trade</ion-label>
               <ion-icon name="swap"></ion-icon>
@@ -31,7 +31,7 @@
               <ion-label>Invite</ion-label>
               <ion-icon name="megaphone"></ion-icon>
             </button>
-          </span>
+          </div>
         </div>
       </div>
 

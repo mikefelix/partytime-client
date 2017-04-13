@@ -60,6 +60,7 @@ export class ChatService {
   respondToServerEvents(alert: Chat){
     let playerId = this.loginService.getId();
     if (/^Quest invitation accepted/.test(alert.chat)) {
+      // TODO: make this only poll the first time somehow
       this.questService.refreshQuest(playerId);
       this.questService.refreshSidequest(playerId);
     }

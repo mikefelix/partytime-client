@@ -39,16 +39,6 @@ export class PlayersPage implements OnInit {
     if (!playerId)
       return;
 
-    //noinspection TypeScriptUnresolvedFunction
-    // this.playerService.getPlayersExcept(playerId).then(p => {
-    //     this.players = p;
-    // });
-
-    //noinspection TypeScriptUnresolvedFunction
-    // this.playerService.getPlayer(playerId).then((p: Player) => {
-    //     this.player = p;
-    // });
-
     this.questService.gameIsStarted().then( (started: boolean) => {
       this.started = started;
     });

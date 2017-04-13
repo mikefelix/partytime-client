@@ -7,6 +7,7 @@ export class Quest {
   description: string;
   items: Item[];
   powers: Power[];
+  allies: number[];
 
   constructor(id: number){
     this.id = id;
@@ -14,6 +15,7 @@ export class Quest {
     this.items = [];
     this.powers = [];
     this.name = this.description = '';
+    this.allies = [];
   }
 
 }

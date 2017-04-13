@@ -6,6 +6,7 @@
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
+
   <div *ngIf="started === false">
     <h2 padding>
       Game has not started. Hang tight...
@@ -74,20 +75,22 @@
 
       <div *ngIf="quest.allies && quest.allies.length > 0" padding>
         <div><b>Allies</b></div>
-        <li *ngFor="let ally of quest.allies" style="display:inline">
+        <li *ngFor="let ally of quest.allies; let i = index;" style="display:inline">
           <ion-chip (click)="revealHero(ally)">
             <ion-icon name="body" color="dark"></ion-icon>
-            <ion-label>{{ally.alias}}</ion-label>
+            <ion-label>{{sidequestAllies[i]}}</ion-label>
           </ion-chip>
         </li>
       </div>
 
       <div padding>
         <div><b>Reward</b></div>
-        <ion-range disabled="true" min="-5" max="{{questRewardMax}}" [(ngModel)]="questReward" color="secondary">
-          <ion-label range-left>-5</ion-label>
-          <ion-label range-right>{{questRewardMax}}</ion-label>
-        </ion-range>
+        <!--<ion-range disabled="true" min="-5" max="{{questRewardMax}}" [(ngModel)]="questReward" color="secondary">-->
+          <!--<ion-label range-left>-5</ion-label>-->
+          <!--<ion-label range-right>{{questRewardMax}}</ion-label>-->
+        <!--</ion-range>-->
+        <div *ngIf="questReward > 0">{{questReward}} of {{questRewardMax}} max</div>
+        <div *ngIf="questReward <= 0">{{questRewardMax}} max</div>
 
         <div *ngIf="questReward > 0">
           <button ion-button (click)=completeQuest(quest) large block>Complete quest</button>
@@ -109,7 +112,7 @@
       </div>
 
       <div padding>
-        <div><b>Help {{sidequestAlly}} gather the following</b></div>
+        <div><b>Help {{sidequestMaster}} gather the following</b></div>
         <ul style="list-style:none">
           <li *ngFor="let power of sidequest.powers" style="display:inline">
             <ion-chip (click)="describePower(power, !power.found)">
@@ -134,12 +137,13 @@
 
       <div padding>
         <div><b>Current reward</b></div>
-        <ion-range disabled="true" min="-5" max="{{sidequestRewardMax}}" [(ngModel)]="sidequestReward"
-                   color="secondary">
-          <ion-label range-left>-5</ion-label>
-          <ion-label range-right>{{sidequestRewardMax}}</ion-label>
-        </ion-range>
-
+        <!--<ion-range disabled="true" min="-5" max="{{sidequestRewardMax}}" [(ngModel)]="sidequestReward"-->
+                   <!--color="secondary">-->
+          <!--<ion-label range-left>-5</ion-label>-->
+          <!--<ion-label range-right>{{sidequestRewardMax}}</ion-label>-->
+        <!--</ion-range>-->
+        <div *ngIf="sidequestReward > 0">{{sidequestReward}} of {{sidequestRewardMax}} max</div>
+        <div *ngIf="sidequestReward <= 0">0</div>
         <div>
           <button ion-button (click)=completeQuest(sidequest) large block>Leave quest</button>
         </div>

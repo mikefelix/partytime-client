@@ -140,7 +140,7 @@ export class TradePage implements OnInit {
 
         this.questService.refreshSidequest(this.player.id);
         this.questService.refreshQuest(this.player.id);
-        this.playerService.getPlayer(this.player.id, true);
+        this.playerService.refreshCurrentPlayer(this.player.id);
 
       });
 

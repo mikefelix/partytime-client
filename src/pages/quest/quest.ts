@@ -22,24 +22,22 @@ export class QuestPage implements OnInit {
   sidequest: Quest;
   sidequestReward: number;
   sidequestRewardMax: number;
-  sidequestAlly: string;
-
+  sidequestMaster: string;
+  sidequestAllies: string[];
   player: Player;
   errorMessage: string;
 
   constructor(private questService: QuestService, private playerService: PlayerService,
               private loginService: LoginService, public alertCtrl: AlertController) {
     this.quest = new Quest(0);
-
     this.sidequest = new Quest(0);
-
     this.player = new Player(0);
-
-    this.sidequestAlly = "your ally";
+    this.sidequestMaster = "your ally";
+    this.sidequestAllies = [];
 
     this.questService.questSubject.subscribe(
       quest => {
-        console.log('refreshed with quest ' + quest);
+        console.log('refreshed with quest ' + quest.id);
         this.quest = quest;
         this.computeQuestReward();
       }
@@ -47,15 +45,9 @@ export class QuestPage implements OnInit {
 
     this.questService.sidequestSubject.subscribe(
       quest => {
+        console.log('refreshed with sidequest ' + quest.id);
         if (quest.id == 0){
-          this.sidequest = {
-            id: 0,
-            master: 0,
-            name: '',
-            description: '',
-            items: [],
-            powers: []
-          };
+          this.sidequest = new Quest(0);
           this.computeSidequestReward();
         }
         else {
@@ -63,8 +55,17 @@ export class QuestPage implements OnInit {
           this.computeSidequestReward();
           this.playerService.getPlayer(quest.master).then((p: Player) => {
             if (p)
-              this.sidequestAlly = p.alias;
-          })
+              this.sidequestMaster = p.alias;
+          });
+
+          if (this.sidequest.allies){
+            for (let i = 0; i < this.sidequest.allies.length; i++){
+              let ally = this.sidequest.allies[i];
+              this.playerService.getPlayer(ally).then((p: Player) => {
+                this.sidequestAllies[i] = p.alias;
+              });
+            }
+          }
         }
       }
     );
@@ -101,9 +102,8 @@ export class QuestPage implements OnInit {
 
   refreshPlayer() {
     //noinspection TypeScriptUnresolvedFunction
-    this.playerService.getPlayer(this.player.id).then( (p: Player) => {
-      console.log('GP2 ' + this.player.id);
-      this.player = p;
+    this.playerService.refreshCurrentPlayer(this.player.id).then( (p: Player) => {
+      // this.player = p;
     });
   }
 
@@ -131,7 +131,7 @@ export class QuestPage implements OnInit {
       else {
         this.sidequest = q;
         this.playerService.getPlayer(q.master).then((p: Player) => {
-          this.sidequestAlly = p.alias;
+          this.sidequestMaster = p.alias;
         })
       }
 */
@@ -359,4 +359,5 @@ export class QuestPage implements OnInit {
     this.sidequestReward = this.currentCompletionReward(this.sidequest);
     this.sidequestRewardMax = this.maximumCompletionReward(this.sidequest);
   }
+
 }

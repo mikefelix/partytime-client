@@ -123,7 +123,6 @@ export class AlertsPage implements OnInit {
       trade.init(_trade);
 
       this.playerService.getPlayer(trade.offerer).then( (otherPlayer: Player) => {
-
         let popover = this.popoverCtrl.create(TradePage, {
           player: this.player,
           otherPlayer: otherPlayer,
@@ -143,7 +142,6 @@ export class AlertsPage implements OnInit {
       trade.init(_trade);
 
       this.playerService.getPlayer(trade.offeree).then( (otherPlayer: Player) => {
-
         let popover = this.popoverCtrl.create(TradePage, {
           player: this.player,
           otherPlayer: otherPlayer,
@@ -163,7 +161,6 @@ export class AlertsPage implements OnInit {
       trade.init(_trade);
 
       this.playerService.getPlayer(trade.offeree).then( (otherPlayer: Player) => {
-
         let popover = this.popoverCtrl.create(TradePage, {
           player: this.player,
           otherPlayer: otherPlayer,
@@ -203,7 +200,6 @@ export class AlertsPage implements OnInit {
       invite.init(_invite);
 
       this.playerService.getPlayer(invite.invitee).then( (otherPlayer: Player) => {
-
         let popover = this.popoverCtrl.create(InvitePage, {
           player: this.player,
           otherPlayer: otherPlayer,
@@ -217,9 +213,12 @@ export class AlertsPage implements OnInit {
   }
 
   cleanedMsg(chat){
+    console.log('cleaned: ');
+    console.dir(chat);
+
     if (chat.poster && chat.poster != 0)
       return chat.chat;
 
-    return chat.chat.replace(/ *\{[0-9]+\}$/, '');
+    return chat.chat.replace(/ *\{[0-9]+(\/[0-9]+])?\}$/, '');
   }
 }

@@ -80,11 +80,22 @@ export class PlayerService implements OnInit {
       .map(r => {
         let player = r.json() as Player;
         this.players[id] = player;
+        return player;
+      })
+      .toPromise()
+  }
+
+  refreshCurrentPlayer(id){
+    return this.http.get(`${AppSettings.API_URL}/games/1/players/${id}`)
+      .map(r => {
+        let player = r.json() as Player;
+        this.players[id] = player;
         this.currentPlayerSubject.next(player);
         return player;
       })
       .toPromise()
   }
+
 /*
   getScores(refresh = false){
     if (refresh)

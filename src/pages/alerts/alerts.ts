@@ -97,7 +97,7 @@ export class AlertsPage implements OnInit {
       }
 
       else if (/^Ally abandoned quest/.test(alert.chat)){
-        let match = alert.chat.match(/\{([0-9]+)\/([0-9]+)\}$/);
+        let match = alert.chat.match(/\{([0-9]+)}$/);
         let allyId = +match[1];
         this.describeAbandonment(allyId, alert.id, event);
       }
@@ -194,11 +194,12 @@ export class AlertsPage implements OnInit {
           {
             text: 'Good job, me!',
             handler: () => {
-              this.chatService.markAlertRead(alertId);
             }
           }
         ]
       }).present();
+
+      this.chatService.markAlertRead(alertId);
     });
   }
 
@@ -221,13 +222,13 @@ export class AlertsPage implements OnInit {
     });
   }
 
-  describeAbandonment(inviteId, alertId, ev){
+  describeAbandonment(allyId, alertId, ev){
     //noinspection TypeScriptUnresolvedFunction
-    this.tradeService.getInvite(this.player.id, inviteId, true).then( (_invite: Invite) => {
-      let invite = new Invite(0);
-      invite.init(_invite);
+    // this.tradeService.getInvite(this.player.id, inviteId, true).then( (_invite: Invite) => {
+    //   let invite = new Invite(0);
+    //   invite.init(_invite);
 
-      this.playerService.getPlayer(invite.invitee).then( (otherPlayer: Player) => {
+      this.playerService.getPlayer(allyId).then( (otherPlayer: Player) => {
 
         this.alertCtrl.create({
           title: 'They left you',
@@ -236,13 +237,14 @@ export class AlertsPage implements OnInit {
             {
               text: 'Not cool',
               handler: () => {
-                this.chatService.markAlertRead(alertId);
               }
             }
           ]
         }).present();
+
+        this.chatService.markAlertRead(alertId);
       });
-    });
+    // });
   }
 
   cleanedMsg(chat){

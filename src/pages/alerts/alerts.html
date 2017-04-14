@@ -6,12 +6,15 @@
 
 <ion-content>
   <div *ngIf="errorMessage">{{errorMessage}}</div>
-  <div padding>
+  <div padding *ngIf="alerts && alerts.length > 0">
     <div *ngFor="let alert of alerts">
       <ion-chip (click)="handleClick(alert, $event)">
         <ion-icon name="alert" color="danger"></ion-icon>
         <ion-label>{{cleanedMsg(alert)}}</ion-label>
       </ion-chip>
     </div>
+  </div>
+  <div padding *ngIf="!alerts || alerts.length == 0">
+    No alerts at this time...
   </div>
 </ion-content>

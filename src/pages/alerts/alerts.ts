@@ -135,7 +135,7 @@ export class AlertsPage implements OnInit {
           otherPlayer: otherPlayer,
           trade: trade,
           alert: alertId
-        }, {cssClass: 'poopover'});
+        });
 
         popover.present({ev});
       });
@@ -154,7 +154,7 @@ export class AlertsPage implements OnInit {
           otherPlayer: otherPlayer,
           trade: trade,
           alert: alertId
-        }, {cssClass: 'poopover'});
+        });
 
         popover.present({ev});
       });
@@ -173,7 +173,7 @@ export class AlertsPage implements OnInit {
           otherPlayer: otherPlayer,
           trade: trade,
           alert: alertId
-        }, {cssClass: 'poopover'});
+        });
 
         popover.present({ev});
       });
@@ -214,7 +214,7 @@ export class AlertsPage implements OnInit {
           otherPlayer: otherPlayer,
           invite: invite,
           alert: alertId
-        }, {cssClass: 'poopover'});
+        });
 
         popover.present({ev});
       });

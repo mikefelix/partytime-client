@@ -56,12 +56,13 @@ export class PlayerService implements OnInit {
       .toPromise()
   }
 
-  getPlayer(id: number, refresh = false) {
+  getPlayer(playerId: number, refresh = false) {
+    let id = playerId.toString();
     if (refresh && id){
       this.players[id] = undefined;
     }
 
-    if (id === 0 || id === undefined){
+    if (id === '0' || id === undefined){
       //noinspection TypeScriptUnresolvedFunction
       return new Promise((resolve, reject) => {
         resolve(undefined);

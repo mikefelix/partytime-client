@@ -16,18 +16,18 @@
 
     <div [ngSwitch]="selectedSort">
       <div *ngSwitchCase="'alpha'">
-        <div *ngFor="let player of players" padding>
-          <ion-chip (click)="revealHero(player)">
+        <div *ngFor="let hero of players" padding>
+          <ion-chip (click)="revealHero(hero)">
             <ion-icon name="body" color="dark"></ion-icon>
-            <ion-label>{{player.alias}} ({{player.score}})</ion-label>
+            <ion-label>{{hero.alias}} ({{hero.score}})</ion-label>
           </ion-chip>
 
-          <div *ngIf="started">
-            <button ion-button (click)="initiateTrade(player, $event)">
+          <div *ngIf="started && hero.id != player.id">
+            <button ion-button (click)="initiateTrade(hero, $event)">
               <ion-label>Trade</ion-label>
               <ion-icon name="swap"></ion-icon>
             </button>
-            <button ion-button (click)="invite(player, $event)">
+            <button ion-button (click)="invite(hero, $event)">
               <ion-label>Invite</ion-label>
               <ion-icon name="megaphone"></ion-icon>
             </button>
@@ -36,18 +36,18 @@
       </div>
 
       <div *ngSwitchCase="'score'">
-        <div *ngFor="let player of scorePlayers" padding>
-          <ion-chip (click)="revealHero(player)">
+        <div *ngFor="let hero of scorePlayers" padding>
+          <ion-chip (click)="revealHero(hero)">
             <ion-icon name="body" color="dark"></ion-icon>
-            <ion-label>{{player.alias}} ({{player.score}})</ion-label>
+            <ion-label>{{hero.alias}} ({{hero.score}})</ion-label>
           </ion-chip>
 
-          <span *ngIf="started">
-            <button ion-button (click)="initiateTrade(player, $event)">
+          <span *ngIf="started && hero.id != player.id">
+            <button ion-button (click)="initiateTrade(hero, $event)">
               <ion-label>Trade</ion-label>
               <ion-icon name="swap"></ion-icon>
             </button>
-            <button ion-button (click)="invite(player, $event)">
+            <button ion-button (click)="invite(hero, $event)">
               <ion-label>Invite</ion-label>
               <ion-icon name="megaphone"></ion-icon>
             </button>

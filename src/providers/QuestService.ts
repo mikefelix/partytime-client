@@ -18,8 +18,8 @@ export class QuestService implements OnInit {
   ngOnInit(){
   }
 
-  getQuest(player: number, quest: number) {
-    return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/quest/${quest}`)
+  getQuest(quest: number) {
+    return this.http.get(`${AppSettings.API_URL}/games/1/quest/${quest}`)
       .map(r => {
         return r.json() as Quest;
       })

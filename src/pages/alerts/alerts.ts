@@ -182,7 +182,7 @@ export class AlertsPage implements OnInit {
 
   describeCompleteQuest(questId: number, reward: number, side: boolean, alertId, ev){
     //noinspection TypeScriptUnresolvedFunction
-    this.questService.getQuest(this.player.id, questId).then( (quest: Quest) => {
+    this.questService.getQuest(questId).then( (quest: Quest) => {
       this.chatService.markAlertRead(alertId);
 
       this.alertCtrl.create({

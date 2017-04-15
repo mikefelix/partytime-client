@@ -7,10 +7,12 @@ import {Player} from "../../providers/Player";
 import {PlayerService} from "../../providers/PlayerService";
 import {Item} from "../../providers/Item";
 import {Power} from "../../providers/Power";
+import {ChatService} from "../../providers/ChatService";
 
 @Component({
   selector: 'page-quest',
-  templateUrl: 'quest.html'
+  templateUrl: 'quest.html'//,
+  // providers: [QuestService, /*PlayerService, */LoginService]
 })
 export class QuestPage implements OnInit {
   started: boolean;
@@ -28,17 +30,27 @@ export class QuestPage implements OnInit {
   selectedSeg = "hero";
   errorMessage: string;
 
+  weirdo: string;
+
   constructor(private questService: QuestService, private playerService: PlayerService,
-              private loginService: LoginService, public alertCtrl: AlertController) {
+              private loginService: LoginService, public alertCtrl: AlertController, public alertsService: ChatService) {
     this.quest = new Quest(0);
     this.sidequest = new Quest(0);
     this.player = new Player(0);
     this.sidequestMaster = "your ally";
     this.allies = [];
 
+/*
+    this.alertsService.weirdoSubject.subscribe( txt => {
+      console.log('q.ts PUSHED: ' + txt);
+      if (this.player.items && this.player.items.length > 0)
+      this.player.items[0].name = txt;
+    });
+*/
+
     this.questService.questSubject.subscribe(
       quest => {
-        console.log('refreshed with quest ' + quest.id);
+        console.log('quest.ts: questSubject refreshing to quest ' + quest.id);
         this.quest = quest;
         this.computeQuestReward();
 
@@ -55,7 +67,7 @@ export class QuestPage implements OnInit {
 
     this.questService.sidequestSubject.subscribe(
       quest => {
-        console.log('refreshed with sidequest ' + quest.id);
+        console.log('quest.ts: questSubject refreshing to sidequest ' + quest.id);
         if (quest.id == 0){
           this.sidequest = new Quest(0);
           this.computeSidequestReward();
@@ -73,6 +85,7 @@ export class QuestPage implements OnInit {
 
     this.playerService.currentPlayerSubject.subscribe(
       player => {
+        console.log('quest.ts: questSubject refreshing to player ' + player.id);
         if (player.id == 0){
           this.player = new Player(0);
         }

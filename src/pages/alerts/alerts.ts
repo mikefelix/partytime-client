@@ -14,6 +14,7 @@ import {Invite} from "../../providers/Invite";
 import {QuestService} from "../../providers/QuestService";
 import {Quest} from "../../providers/Quest";
 import {AlertController} from "ionic-angular";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'page-alerts',
@@ -42,12 +43,6 @@ export class AlertsPage implements OnInit {
       // this.refreshAlerts();
     });
   }
-
-  // refreshAlerts(){
-  //   this.chatService.getAlerts(this.player.id, true).then((alerts: Chat[]) => {
-  //     this.alerts = alerts;
-  //   });
-  // }
 
   handleClick(alert: Chat, event){
     if (!alert.poster && alert.poster == 0){

@@ -9,10 +9,11 @@ import {AlertsPage} from "../alerts/alerts";
 import {ChatService} from "../../providers/ChatService";
 import {Chat} from "../../providers/Chat";
 import {PlayerService} from "../../providers/PlayerService";
+import {QuestService} from "../../providers/QuestService";
 
 @Component({
-  templateUrl: 'tabs.html',
-  providers: [ChatService, LoginService, PlayerService]
+  templateUrl: 'tabs.html'/*,
+    providers: [ChatService, LoginService, PlayerService, QuestService]*/
 })
 export class TabsPage implements OnInit {
   // this tells the tabs component which Pages
@@ -25,10 +26,12 @@ export class TabsPage implements OnInit {
   alertNum: number;
 
   constructor(private loginService: LoginService, private alertCtrl: AlertController, public chatService: ChatService,
-              private playerService: PlayerService) {
+              private playerService: PlayerService, private questService: QuestService) {
   }
 
   ngOnInit(){
+    // this.chatService.weirdoSubject.subscribe( txt => console.log('t.ts PUSHED: ' + txt));
+
     // this.checkForAlerts(this.chatService, player);
     this.chatService.alertsSubject.subscribe(
       alerts => {
@@ -38,6 +41,13 @@ export class TabsPage implements OnInit {
 
     this.chatService.wakeUp();
     this.playerService.wakeUp();
+
+    this.questService.sidequestSubject.subscribe(
+        quest => {
+          console.log('tabs got pushed quest ' + quest.id);
+        }
+    );
+
   }
 
 /*

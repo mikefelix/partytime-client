@@ -7,15 +7,12 @@ import {AppSettings} from "./AppSettings";
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Injectable()
-export class QuestService implements OnInit {
+export class QuestService {
   started: boolean;
   public questSubject: BehaviorSubject<Quest> = new BehaviorSubject<Quest>(new Quest(0));
   public sidequestSubject: BehaviorSubject<Quest> = new BehaviorSubject<Quest>(new Quest(0));
 
   constructor(private http: Http) {
-  }
-
-  ngOnInit(){
   }
 
   getQuest(quest: number) {
@@ -27,21 +24,26 @@ export class QuestService implements OnInit {
   }
 
   refreshQuest(player: number) {
+    console.log('QuestService: refresh quest for player ' + player);
     return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/quest`)
       .map(r => {
         let quest = r.json() as Quest;
-        this.questSubject.next(quest);
+        // if (quest && quest.id != 0)
+          this.questSubject.next(quest);
+
         return quest;
       })
       .toPromise()
   }
 
   refreshSidequest(player: number) {
-    console.log('refresh sidequest');
+    console.log('QuestService: refresh sidequest for player ' + player);
     return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/sidequest`)
       .map(r => {
         let quest = r.json() as Quest;
-        this.sidequestSubject.next(quest);
+        // if (quest && quest.id != 0)
+          this.sidequestSubject.next(quest);
+
         return quest;
       })
       .toPromise()

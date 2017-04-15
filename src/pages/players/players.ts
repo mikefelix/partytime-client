@@ -8,10 +8,13 @@ import {TradePage} from "../trade/trade";
 import {PlayerService} from "../../providers/PlayerService";
 import {LoginService} from "../../providers/LoginService";
 import {InvitePage} from "../invite/invite";
+import {ChatService} from "../../providers/ChatService";
 
 @Component({
   selector: 'page-players',
   templateUrl: 'players.html'
+  // ,
+  // providers: [PlayerService, QuestService, LoginService]
 })
 export class PlayersPage implements OnInit {
   started: boolean;
@@ -22,7 +25,7 @@ export class PlayersPage implements OnInit {
   selectedSort: string = 'alpha';
 
   constructor(private playerService: PlayerService, private questService: QuestService, private popoverCtrl: PopoverController,
-              private alertCtrl: AlertController, private loginService: LoginService) {
+              private alertCtrl: AlertController, private loginService: LoginService, public alertsService: ChatService) {
     this.players = this.scorePlayers = [];
     this.player = {
         id: +localStorage.getItem("player"),
@@ -39,18 +42,23 @@ export class PlayersPage implements OnInit {
     if (!playerId)
       return;
 
+    // this.alertsService.weirdoSubject.subscribe( txt => console.log('p.ts PUSHED: ' + txt));
+
     this.questService.gameIsStarted().then( (started: boolean) => {
       this.started = started;
     });
 
     this.playerService.currentPlayerSubject.subscribe(
       player => {
-        this.player = player;
+        console.log('players.ts: currentPlayerSubject refreshing player to ' + player.id);
+        if (player.id != 0)
+          this.player = player;
       }
     );
 
     this.playerService.otherPlayersSubject.subscribe(
       (players: Player[]) => {
+        console.log('players.ts: otherPlayerSubject refreshing players');
         this.players = players;
         this.scorePlayers = players.slice(0).sort((a: Player, b: Player) => a.score < b.score ? 1 : (b.score < a.score ? -1 : 0));
       }
@@ -90,6 +98,7 @@ export class PlayersPage implements OnInit {
   }
 
   invite(otherPlayer, ev){
+    console.log('invite as player ' + this.player.id);
     let popover = this.popoverCtrl.create(InvitePage, {
       player: this.player,
       otherPlayer: otherPlayer

@@ -14,9 +14,20 @@ import {PlayerService} from "./PlayerService";
 
 @Injectable()
 export class ChatService {
-  // alerts: Chat[];
-
   public alertsSubject: BehaviorSubject<Chat[]> = new BehaviorSubject<Chat[]>([]);
+
+
+  // id = ' rand ' + Math.random();
+  // count = 1;
+  //
+  // public weirdoSubject: BehaviorSubject<string> = new BehaviorSubject<string>(this.id);
+
+  // injectWeirdo(){
+    // this.weirdoSubject.next(this.id + '|' + this.count++);
+    // setTimeout(() => this.injectWeirdo(), 10000);
+  // }
+
+
 
   constructor(private http: Http, private loginService: LoginService, private questService: QuestService, private playerService: PlayerService) {
   }
@@ -32,6 +43,7 @@ export class ChatService {
   wakeUp(){
     // setTimeout(() => this.pollAlerts(this.http), 5000);
     this.pollAlerts(this.http);
+    // this.injectWeirdo();
   }
 
   pollAlerts(http: Http){
@@ -61,17 +73,20 @@ export class ChatService {
     let playerId = this.loginService.getId();
     if (/^Quest invitation accepted/.test(alert.chat)) {
       // TODO: make this only poll the first time somehow
+      console.log('Invite accepted, refreshing everything.');
       this.questService.refreshQuest(playerId);
       this.questService.refreshSidequest(playerId);
     }
 
     else if (/^Trade completed/.test(alert.chat)) {
-      this.playerService.getPlayer(playerId, true);
+      console.log('Trade completed, refreshing everything.');
+      this.playerService.refreshCurrentPlayer(playerId);
       this.questService.refreshQuest(playerId);
       this.questService.refreshSidequest(playerId);
     }
 
     else if (/^Quest completed/.test(alert.chat)) {
+      console.log('Quest completed, refreshing everything.');
       this.questService.refreshQuest(playerId);
       this.questService.refreshSidequest(playerId);
     }

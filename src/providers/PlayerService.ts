@@ -16,6 +16,7 @@ export class PlayerService implements OnInit {
 
   public currentPlayerSubject: BehaviorSubject<Player> = new BehaviorSubject<Player>(new Player(0));
   public otherPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject<Player[]>([]);
+  // public testSubject: BehaviorSubject<string> = new BehaviorSubject<string>(this.id);
 
   constructor(private http: Http) {
   }
@@ -30,13 +31,19 @@ export class PlayerService implements OnInit {
   wakeUp(){
     // setTimeout(() => this.pollAlerts(this.http), 5000);
     this.pollPlayers(this.http);
+    // this.testPoll();
   }
+
+  // testPoll(){
+  //   this.testSubject.next(this.id + '|' + this.count++); setTimeout(() => this.testPoll(), 1000)
+  // }
 
   pollPlayers(http: Http){
     //noinspection TypeScriptUnresolvedFunction
     http.get(`${AppSettings.API_URL}/games/1/players`)
       .map((res: Response) => {
         let players = (res.json() as Player[]) || [];
+        console.log('PlayerService: refresh other players');
         this.otherPlayersSubject.next(players);
         setTimeout(() => this.pollPlayers(http), 30000);
       })
@@ -57,7 +64,7 @@ export class PlayerService implements OnInit {
   }
 
   getPlayer(playerId: number, refresh = false) {
-    let id = playerId.toString();
+    let id: string = playerId.toString();
     console.log('getPlayer ' + id);
     if (refresh && id){
       this.players[id] = undefined;
@@ -87,10 +94,13 @@ export class PlayerService implements OnInit {
       .toPromise()
   }
 
-  refreshCurrentPlayer(id){
+  refreshCurrentPlayer(_id){
+    let id = _id.toString();
     return this.http.get(`${AppSettings.API_URL}/games/1/players/${id}`)
       .map(r => {
         let player = r.json() as Player;
+        console.log('PlayerService: refresh current player to ' + id);
+        console.dir(player)
         this.players[id] = player;
         this.currentPlayerSubject.next(player);
         return player;

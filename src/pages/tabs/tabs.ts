@@ -40,6 +40,7 @@ export class TabsPage implements OnInit {
     );
 
     this.chatService.wakeUp();
+    this.questService.wakeUp();
     this.playerService.wakeUp();
 
     this.questService.sidequestSubject.subscribe(

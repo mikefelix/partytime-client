@@ -1,10 +1,11 @@
 import {Injectable, OnInit} from "@angular/core";
-import {Http} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import {Quest} from "./Quest";
 import "rxjs/Rx";
 import "rxjs/add/operator/toPromise";
 import {AppSettings} from "./AppSettings";
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {LoginService} from "./LoginService";
 
 @Injectable()
 export class QuestService {
@@ -12,16 +13,38 @@ export class QuestService {
   public questSubject: BehaviorSubject<Quest> = new BehaviorSubject<Quest>(new Quest(0));
   public sidequestSubject: BehaviorSubject<Quest> = new BehaviorSubject<Quest>(new Quest(0));
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private loginService: LoginService) {
   }
 
   wakeUp(){
     // setTimeout(() => this.pollAlerts(this.http), 5000);
-    this.pollQuests(this.http);
+    this.pollQuests(this.loginService.getId(), this.http);
     // this.testPoll();
   }
 
-  pollQuests(http: Http) {
+  // testPoll(){
+  //   this.testSubject.next(this.id + '|' + this.count++); setTimeout(() => this.testPoll(), 1000)
+  // }
+
+  pollQuests(player: number, http: Http){
+    //noinspection TypeScriptUnresolvedFunction
+    http.get(`${AppSettings.API_URL}/games/1/players/${player}/quest`)
+      .map((res: Response) => {
+        let quest = (res.json() as Quest);
+        console.log('QuestService: refresh quest');
+        this.questSubject.next(quest);
+      })
+      .toPromise();
+
+    http.get(`${AppSettings.API_URL}/games/1/players/${player}/sidequest`)
+      .map((res: Response) => {
+        let quest = (res.json() as Quest);
+        console.log('QuestService: refresh sidequest');
+        this.sidequestSubject.next(quest);
+      })
+      .toPromise();
+
+    setTimeout(() => this.pollQuests(player, http), 40000);
   }
 
   getQuest(quest: number) {

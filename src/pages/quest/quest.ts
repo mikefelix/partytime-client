@@ -25,6 +25,7 @@ export class QuestPage implements OnInit {
   sidequestMaster: string;
   allies: string[];
   player: Player;
+  selectedSeg = "hero"
   errorMessage: string;
 
   constructor(private questService: QuestService, private playerService: PlayerService,
@@ -148,21 +149,23 @@ export class QuestPage implements OnInit {
   describeItem(req: Item, withRumors: boolean = false){
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
-        let rumored: string;
+        console.log('player1:')
+        console.dir(rumor1)
+        console.log('player2:')
+        console.dir(rumor2)
 
-        if (withRumors) {
-          rumored = rumor1 ? rumor1.alias : '';
-          if (rumor2) {
-            if (Math.random() < 0.5)
-              rumored += ' or ' + rumor2.alias;
-            else
-              rumored = rumor2.alias + ' or ' + rumored;
-          }
+        let desc;
+        if (withRumors && (rumor1 || rumor2)) {
+          let rumored = rumor1.alias + ' or ' + rumor2.alias;
+          desc = this.rumoredPowerDesc(req, rumored);
+        }
+        else {
+          desc = req.description;
         }
 
         this.alertCtrl.create({
           title: req.name,
-          subTitle: rumored ? this.rumoredItemDesc(req, rumored) : req.description,
+          subTitle: desc,
           buttons: ['Dismiss']
         }).present();
       });
@@ -179,21 +182,23 @@ export class QuestPage implements OnInit {
   describePower(req: Power, withRumors: boolean = false){
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
-        let rumored: string;
-        if (withRumors) {
-          rumored = rumor1 ? rumor1.alias : '';
-          if (rumor2) {
-            if (Math.random() < 0.5)
-              rumored += ' or ' + rumor2.alias;
-            else
-              rumored = rumor2.alias + ' or ' + rumored;
-          }
+        console.log('player1:')
+        console.dir(rumor1)
+        console.log('player2:')
+        console.dir(rumor2)
 
+        let desc;
+        if (withRumors && (rumor1 || rumor2)) {
+          let rumored = rumor1.alias + ' or ' + rumor2.alias;
+          desc = this.rumoredPowerDesc(req, rumored);
+        }
+        else {
+          desc = req.description;
         }
 
         this.alertCtrl.create({
           title: req.name,
-          subTitle: rumored ? this.rumoredPowerDesc(req, rumored) : req.description,
+          subTitle: desc,
           buttons: ['Dismiss']
         }).present();
       });
@@ -343,10 +348,10 @@ export class QuestPage implements OnInit {
     }
   }
 
-  revealHero(player){
+  revealHero(player: number){
     this.playerService.getPlayer(player).then((p: Player) => {
       this.alertCtrl.create({
-        title: player.name,
+        title: p.name,
         subTitle: `Sources reveal that the secret identity of ${p.alias} is: ${p.name}!`,
         buttons: ['Dismiss']
       }).present();

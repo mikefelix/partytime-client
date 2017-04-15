@@ -14,141 +14,164 @@
   </div>
 
   <div *ngIf="started">
-    <div padding *ngIf="player" >
-      <ion-chip (click)="revealHero(player)">
-        <ion-icon name="body" color="dark"></ion-icon>
-        <ion-label>{{player.alias}} ({{player.score}})</ion-label>
-      </ion-chip>
-    </div>
 
-    <div padding *ngIf="player">
-      <!--<button ion-button (click)="removeLogin()">Change login</button>-->
-      <h2>Items and powers</h2>
-      <ul style="list-style:none">
-        <li *ngFor="let power of player.powers" style="display:inline">
-          <ion-chip (click)="describePower(power)">
-            <ion-icon name="flash"></ion-icon>
-            <ion-label>{{power.name}}</ion-label>
-          </ion-chip>
-        </li>
-        <li *ngFor="let item of player.items" style="display:inline">
-          <ion-chip (click)="describeItem(item)">
-            <ion-icon name="build" color="secondary"></ion-icon>
-            <ion-label>{{item.name}}</ion-label>
-          </ion-chip>
-        </li>
-      </ul>
-    </div>
+    <ion-segment [(ngModel)]="selectedSeg">
+      <ion-segment-button value="hero">Hero</ion-segment-button>
+      <ion-segment-button value="quest">Main quest</ion-segment-button>
+      <ion-segment-button value="sidequest">Side quest</ion-segment-button>
+    </ion-segment>
 
-    <div padding *ngIf="quest">
-      <h2>Main quest</h2>
-      <div padding>
-        <div><b>{{quest.name}}</b></div>
-        <div>
-        {{quest.description}}
-        </div>
-      </div>
+    <div [ngSwitch]="selectedSeg">
 
-      <div padding>
-        <div><b>Gather the following</b></div>
-        <ul style="list-style:none">
-          <li *ngFor="let power of quest.powers" style="display:inline">
-            <ion-chip (click)="describePower(power, !power.found)">
-              <ion-icon name="flash"></ion-icon>
-              <ion-label>{{power.name}}</ion-label>
-              <button *ngIf="power.found" ion-button clear color="dark">
-                <ion-icon name="checkmark"></ion-icon>
-              </button>
-            </ion-chip>
-          </li>
-          <li *ngFor="let it of quest.items" style="display:inline">
-            <ion-chip (click)="describeItem(it, !it.found)">
-              <ion-icon name="build" color="secondary"></ion-icon>
-              <ion-label>{{it.name}}</ion-label>
-              <button *ngIf="it.found" ion-button clear color="dark">
-                <ion-icon name="checkmark"></ion-icon>
-              </button>
-            </ion-chip>
-          </li>
-        </ul>
-      </div>
-
-      <div *ngIf="quest.allies && quest.allies.length > 0" padding>
-        <div><b>Allies</b></div>
-        <li *ngFor="let ally of quest.allies; let i = index;" style="display:inline">
-          <ion-chip (click)="revealHero(ally)">
+      <div *ngSwitchCase="'hero'">
+        <div padding style="text-align:center" *ngIf="player">
+          <ion-chip (click)="revealHero(player)">
             <ion-icon name="body" color="dark"></ion-icon>
-            <ion-label>{{allies[i]}}</ion-label>
+            <ion-label style="font-size:1.5em">{{player.alias}} ({{player.score}})</ion-label>
           </ion-chip>
-        </li>
-      </div>
-
-      <div padding>
-        <div><b>Reward</b></div>
-        <!--<ion-range disabled="true" min="-5" max="{{questRewardMax}}" [(ngModel)]="questReward" color="secondary">-->
-          <!--<ion-label range-left>-5</ion-label>-->
-          <!--<ion-label range-right>{{questRewardMax}}</ion-label>-->
-        <!--</ion-range>-->
-        <div *ngIf="questReward > 0">{{questReward}} of {{questRewardMax}} max</div>
-        <div *ngIf="questReward <= 0">{{questRewardMax}} max</div>
-
-        <div *ngIf="questReward > 0">
-          <button ion-button (click)=completeQuest(quest) large block>Complete quest</button>
         </div>
-        <div *ngIf="questReward <= 0">
-          <button ion-button (click)=completeQuest(quest) large block>Abandon quest</button>
-        </div>
-      </div>
 
-    </div>
-
-    <div padding *ngIf="sidequest && sidequest.id != 0">
-      <h2>Side quest</h2>
-      <div padding>
-        <div><b>{{sidequest.name}}</b></div>
-        <div>
-          {{sidequest.description}}
+        <div padding *ngIf="player">
+          <!--<button ion-button (click)="removeLogin()">Change login</button>-->
+          <h2>Items and powers</h2>
+          <ul style="list-style:none">
+            <li *ngFor="let power of player.powers" style="display:inline">
+              <ion-chip (click)="describePower(power)">
+                <ion-icon name="flash"></ion-icon>
+                <ion-label>{{power.name}}</ion-label>
+              </ion-chip>
+            </li>
+            <li *ngFor="let item of player.items" style="display:inline">
+              <ion-chip (click)="describeItem(item)">
+                <ion-icon name="build" color="secondary"></ion-icon>
+                <ion-label>{{item.name}}</ion-label>
+              </ion-chip>
+            </li>
+          </ul>
         </div>
       </div>
 
-      <div padding>
-        <div><b>Help {{sidequestMaster}} gather the following</b></div>
-        <ul style="list-style:none">
-          <li *ngFor="let power of sidequest.powers" style="display:inline">
-            <ion-chip (click)="describePower(power, !power.found)">
-              <ion-icon name="flash"></ion-icon>
-              <ion-label>{{power.name}}</ion-label>
-              <button *ngIf="power.found" ion-button clear color="dark">
-                <ion-icon name="checkmark"></ion-icon>
-              </button>
-            </ion-chip>
-          </li>
-          <li *ngFor="let item of sidequest.items" style="display:inline">
-            <ion-chip (click)="describeItem(item, !item.found)">
-              <ion-icon name="build" color="secondary"></ion-icon>
-              <ion-label>{{item.name}}</ion-label>
-              <button *ngIf="item.found" ion-button clear color="dark">
-                <ion-icon name="checkmark"></ion-icon>
-              </button>
-            </ion-chip>
-          </li>
-        </ul>
-      </div>
+      <div *ngSwitchCase="'quest'">
 
-      <div padding>
-        <div><b>Current reward</b></div>
-        <!--<ion-range disabled="true" min="-5" max="{{sidequestRewardMax}}" [(ngModel)]="sidequestReward"-->
-                   <!--color="secondary">-->
-          <!--<ion-label range-left>-5</ion-label>-->
-          <!--<ion-label range-right>{{sidequestRewardMax}}</ion-label>-->
-        <!--</ion-range>-->
-        <div *ngIf="sidequestReward > 0">{{sidequestReward}} of {{sidequestRewardMax}} max</div>
-        <div *ngIf="sidequestReward <= 0">0</div>
-        <div>
-          <button ion-button (click)=completeQuest(sidequest) large block>Leave quest</button>
+        <div padding *ngIf="quest && quest.id != 0">
+          <h2>Main quest</h2>
+          <div padding>
+            <div><b>{{quest.name}}</b></div>
+            <div padding>
+              {{quest.description}}
+            </div>
+          </div>
+
+          <div padding>
+            <div><b>Gather the following</b></div>
+            <ul style="list-style:none">
+              <li *ngFor="let power of quest.powers" style="display:inline">
+                <ion-chip (click)="describePower(power, !power.found)">
+                  <ion-icon name="flash"></ion-icon>
+                  <ion-label>{{power.name}}</ion-label>
+                  <button *ngIf="power.found" ion-button clear color="dark">
+                    <ion-icon name="checkmark"></ion-icon>
+                  </button>
+                </ion-chip>
+              </li>
+              <li *ngFor="let it of quest.items" style="display:inline">
+                <ion-chip (click)="describeItem(it, !it.found)">
+                  <ion-icon name="build" color="secondary"></ion-icon>
+                  <ion-label>{{it.name}}</ion-label>
+                  <button *ngIf="it.found" ion-button clear color="dark">
+                    <ion-icon name="checkmark"></ion-icon>
+                  </button>
+                </ion-chip>
+              </li>
+            </ul>
+          </div>
+
+          <div *ngIf="quest.allies && quest.allies.length > 0" padding>
+            <div><b>Allies</b></div>
+            <ul style="list-style:none">
+              <li *ngFor="let ally of quest.allies; let i = index;" style="display:inline">
+                <ion-chip (click)="revealHero(ally)">
+                  <ion-icon name="body" color="dark"></ion-icon>
+                  <ion-label>{{allies[i]}}</ion-label>
+                </ion-chip>
+              </li>
+            </ul>
+          </div>
+
+          <div padding>
+            <div><b>Reward</b></div>
+            <!--<ion-range disabled="true" min="-5" max="{{questRewardMax}}" [(ngModel)]="questReward" color="secondary">-->
+            <!--<ion-label range-left>-5</ion-label>-->
+            <!--<ion-label range-right>{{questRewardMax}}</ion-label>-->
+            <!--</ion-range>-->
+            <div padding *ngIf="questReward > 0">{{questReward}} of {{questRewardMax}} max</div>
+            <div padding *ngIf="questReward <= 0">{{questRewardMax}} max</div>
+
+            <div *ngIf="questReward > 0">
+              <button ion-button (click)=completeQuest(quest) large block>Complete quest</button>
+            </div>
+            <div *ngIf="questReward <= 0">
+              <button ion-button (click)=completeQuest(quest) large block>Abandon quest</button>
+            </div>
+          </div>
+
         </div>
       </div>
+      <div *ngSwitchCase="'sidequest'">
 
+        <div padding *ngIf="!sidequest || sidequest.id == 0">
+          You have no side quest. Make some friends!
+        </div>
+
+        <div padding *ngIf="sidequest && sidequest.id != 0">
+          <h2>Side quest</h2>
+          <div padding>
+            <div><b>{{sidequest.name}}</b></div>
+            <div padding>
+              {{sidequest.description}}
+            </div>
+          </div>
+
+          <div padding>
+            <div><b>Help {{sidequestMaster}} gather the following</b></div>
+            <ul style="list-style:none">
+              <li *ngFor="let power of sidequest.powers" style="display:inline">
+                <ion-chip (click)="describePower(power, !power.found)">
+                  <ion-icon name="flash"></ion-icon>
+                  <ion-label>{{power.name}}</ion-label>
+                  <button *ngIf="power.found" ion-button clear color="dark">
+                    <ion-icon name="checkmark"></ion-icon>
+                  </button>
+                </ion-chip>
+              </li>
+              <li *ngFor="let item of sidequest.items" style="display:inline">
+                <ion-chip (click)="describeItem(item, !item.found)">
+                  <ion-icon name="build" color="secondary"></ion-icon>
+                  <ion-label>{{item.name}}</ion-label>
+                  <button *ngIf="item.found" ion-button clear color="dark">
+                    <ion-icon name="checkmark"></ion-icon>
+                  </button>
+                </ion-chip>
+              </li>
+            </ul>
+          </div>
+
+          <div padding>
+            <div><b>Current reward</b></div>
+            <!--<ion-range disabled="true" min="-5" max="{{sidequestRewardMax}}" [(ngModel)]="sidequestReward"-->
+            <!--color="secondary">-->
+            <!--<ion-label range-left>-5</ion-label>-->
+            <!--<ion-label range-right>{{sidequestRewardMax}}</ion-label>-->
+            <!--</ion-range>-->
+            <div padding *ngIf="sidequestReward > 0">{{sidequestReward}} of {{sidequestRewardMax}} max</div>
+            <div padding *ngIf="sidequestReward <= 0">0</div>
+            <div>
+              <button ion-button (click)=completeQuest(sidequest) large block>Leave quest</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 

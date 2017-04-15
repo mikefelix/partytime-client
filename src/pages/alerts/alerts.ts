@@ -198,8 +198,6 @@ export class AlertsPage implements OnInit {
           }
         ]
       }).present();
-
-      this.chatService.markAlertRead(alertId);
     });
   }
 
@@ -228,23 +226,22 @@ export class AlertsPage implements OnInit {
     //   let invite = new Invite(0);
     //   invite.init(_invite);
 
-      this.playerService.getPlayer(allyId).then( (otherPlayer: Player) => {
+    this.chatService.markAlertRead(alertId);
 
-        this.alertCtrl.create({
-          title: 'They left you',
-          subTitle: `${otherPlayer.alias} has abandoned your quest!`,
-          buttons: [
-            {
-              text: 'Not cool',
-              handler: () => {
-              }
+    this.playerService.getPlayer(allyId).then( (otherPlayer: Player) => {
+
+      this.alertCtrl.create({
+        title: 'They left you',
+        subTitle: `${otherPlayer.alias} has abandoned your quest!`,
+        buttons: [
+          {
+            text: 'Not cool',
+            handler: () => {
             }
-          ]
-        }).present();
-
-        this.chatService.markAlertRead(alertId);
-      });
-    // });
+          }
+        ]
+      }).present();
+    });
   }
 
   cleanedMsg(chat){

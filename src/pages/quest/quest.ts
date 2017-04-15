@@ -169,7 +169,7 @@ export class QuestPage implements OnInit {
 
   rumoredPowerDesc(req: Power, rumored: string) {
     if (Math.random() < 0.5)
-      return `${req.description}\n Some say this power is possessed by ${rumored}.`;
+      return `${req.description}\n To find this power, talk to ${rumored}.`;
     else
       return `${req.description}\n ${rumored} might have this power.`;
   }

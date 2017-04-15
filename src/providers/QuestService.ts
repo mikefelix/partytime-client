@@ -37,6 +37,7 @@ export class QuestService implements OnInit {
   }
 
   refreshSidequest(player: number) {
+    console.log('refresh sidequest');
     return this.http.get(`${AppSettings.API_URL}/games/1/players/${player}/sidequest`)
       .map(r => {
         let quest = r.json() as Quest;

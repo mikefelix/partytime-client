@@ -31,7 +31,7 @@ export class ChatService {
 
   wakeUp(){
     // setTimeout(() => this.pollAlerts(this.http), 5000);
-    // this.pollAlerts(this.http);
+    this.pollAlerts(this.http);
   }
 
   pollAlerts(http: Http){

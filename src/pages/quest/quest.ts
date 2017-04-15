@@ -43,8 +43,8 @@ export class QuestPage implements OnInit {
 /*
     this.alertsService.weirdoSubject.subscribe( txt => {
       console.log('q.ts PUSHED: ' + txt);
-      if (this.player.items && this.player.items.length > 0)
-      this.player.items[0].name = txt;
+      if (this.sidequest)
+        this.sidequest = undefined;
     });
 */
 

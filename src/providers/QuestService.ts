@@ -15,6 +15,15 @@ export class QuestService {
   constructor(private http: Http) {
   }
 
+  wakeUp(){
+    // setTimeout(() => this.pollAlerts(this.http), 5000);
+    this.pollQuests(this.http);
+    // this.testPoll();
+  }
+
+  pollQuests(http: Http) {
+  }
+
   getQuest(quest: number) {
     return this.http.get(`${AppSettings.API_URL}/games/1/quests/${quest}`)
       .map(r => {

@@ -18,16 +18,14 @@ export class ChatService {
 
 
   // id = ' rand ' + Math.random();
-  // count = 1;
-  //
-  // public weirdoSubject: BehaviorSubject<string> = new BehaviorSubject<string>(this.id);
+  count = 1;
 
-  // injectWeirdo(){
-    // this.weirdoSubject.next(this.id + '|' + this.count++);
-    // setTimeout(() => this.injectWeirdo(), 10000);
-  // }
+  public weirdoSubject: BehaviorSubject<string> = new BehaviorSubject<string>("0");
 
-
+  injectWeirdo(){
+    this.weirdoSubject.next("" + this.count++);
+    setTimeout(() => this.injectWeirdo(), 10000);
+  }
 
   constructor(private http: Http, private loginService: LoginService, private questService: QuestService, private playerService: PlayerService) {
   }

@@ -64,7 +64,7 @@ export class PlayerService implements OnInit {
   }
 
   getPlayer(playerId: number, refresh = false) {
-    let id: string = playerId.toString();
+    let id = (playerId || 0).toString();
     console.log('getPlayer ' + id);
     if (refresh && id){
       this.players[id] = undefined;

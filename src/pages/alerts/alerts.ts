@@ -44,6 +44,16 @@ export class AlertsPage implements OnInit {
     });
   }
 
+
+  fakeTradeChat: Chat = {
+    id: 0, poster: null, posterName: null, chat: 'Trade completed '
+  };
+
+  sendFakeTrade(){
+    console.log('send fake trade');
+    this.chatService.respondToServerEvents(this.fakeTradeChat);
+  }
+
   handleClick(alert: Chat, event){
     if (!alert.poster && alert.poster == 0){
       // 1. Accept a join proposal

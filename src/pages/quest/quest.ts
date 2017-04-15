@@ -25,7 +25,7 @@ export class QuestPage implements OnInit {
   sidequestMaster: string;
   allies: string[];
   player: Player;
-  selectedSeg = "hero"
+  selectedSeg = "hero";
   errorMessage: string;
 
   constructor(private questService: QuestService, private playerService: PlayerService,
@@ -239,8 +239,9 @@ export class QuestPage implements OnInit {
               });
             }
             else {
-              this.questService.completeQuest(quest).then((newQuest: Quest) => {
+              this.questService.completeQuest(this.player.id).then((newQuest: Quest) => {
                 this.quest = newQuest;
+                this.refreshPlayer();
               });
             }
           }

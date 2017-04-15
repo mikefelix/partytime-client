@@ -82,7 +82,7 @@ export class AlertsPage implements OnInit {
 
       // 5. Give info on a completed quest
       else if (/^Quest completed/.test(alert.chat)){
-        let match = alert.chat.match(/\{([0-9]+)\/([0-9]+)\}$/);
+        let match = alert.chat.match(/\{([0-9]+)\/(-?[0-9]+)\}$/);
         let questId = +match[1];
         let reward = +match[2];
         this.describeCompleteQuest(questId, reward, false, alert.id, event);
@@ -248,6 +248,6 @@ export class AlertsPage implements OnInit {
     if (chat.poster && chat.poster != 0)
       return chat.chat;
 
-    return chat.chat.replace(/ *\{[0-9]+(\/[0-9]+)?\}$/, '');
+    return chat.chat.replace(/ *\{[0-9]+(\/-?[0-9]+)?\}$/, '');
   }
 }

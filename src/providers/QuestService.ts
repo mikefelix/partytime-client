@@ -19,7 +19,7 @@ export class QuestService implements OnInit {
   }
 
   getQuest(quest: number) {
-    return this.http.get(`${AppSettings.API_URL}/games/1/quest/${quest}`)
+    return this.http.get(`${AppSettings.API_URL}/games/1/quests/${quest}`)
       .map(r => {
         return r.json() as Quest;
       })
@@ -46,8 +46,8 @@ export class QuestService implements OnInit {
       .toPromise()
   }
 
-  completeQuest(quest: Quest) {
-    return this.http.delete(`${AppSettings.API_URL}/games/1/players/${quest.master}/quest`)
+  completeQuest(player: number) {
+    return this.http.delete(`${AppSettings.API_URL}/games/1/players/${player}/quest`)
       .map(r => {
         return r.json() as Quest;
       })

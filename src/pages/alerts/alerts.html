@@ -10,7 +10,7 @@
     <div *ngFor="let alert of alerts">
       <ion-chip (click)="handleClick(alert, $event)">
         <ion-icon name="alert" color="danger"></ion-icon>
-        <ion-label>{{cleanedMsg(alert)}}</ion-label>
+        <ion-label style="font-size:1.2em">{{cleanedMsg(alert)}}</ion-label>
       </ion-chip>
     </div>
   </div>

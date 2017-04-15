@@ -248,6 +248,6 @@ export class AlertsPage implements OnInit {
     if (chat.poster && chat.poster != 0)
       return chat.chat;
 
-    return chat.chat.replace(/ *\{[0-9]+(\/[0-9]+])?\}$/, '');
+    return chat.chat.replace(/ *\{[0-9]+(\/[0-9]+)?\}$/, '');
   }
 }

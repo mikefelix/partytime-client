@@ -33,7 +33,7 @@
 
         <div padding *ngIf="player">
           <!--<button ion-button (click)="removeLogin()">Change login</button>-->
-          <h2>Items and powers</h2>
+          <h2>Powers</h2>
           <ul style="list-style:none">
             <li *ngFor="let power of player.powers" style="display:inline">
               <ion-chip (click)="describePower(power)">
@@ -41,6 +41,10 @@
                 <ion-label>{{power.name}}</ion-label>
               </ion-chip>
             </li>
+          </ul>
+
+          <h2>Items</h2>
+          <ul style="list-style:none">
             <li *ngFor="let item of player.items" style="display:inline">
               <ion-chip (click)="describeItem(item)">
                 <ion-icon name="build" color="secondary"></ion-icon>

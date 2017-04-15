@@ -141,7 +141,7 @@ export class QuestPage implements OnInit {
 
   rumoredItemDesc(req: Item, rumored: string) {
     if (Math.random() < 0.5)
-      return `${req.description}\n Rumor has it you might find this in the possession of ${rumored}.`;
+      return `${req.description}\n Rumor has it you might get this from ${rumored}.`;
     else
       return `${req.description}\n Possible owners: ${rumored}.`;
   }
@@ -149,15 +149,10 @@ export class QuestPage implements OnInit {
   describeItem(req: Item, withRumors: boolean = false){
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
-        console.log('player1:')
-        console.dir(rumor1)
-        console.log('player2:')
-        console.dir(rumor2)
-
         let desc;
         if (withRumors && (rumor1 || rumor2)) {
           let rumored = rumor1.alias + ' or ' + rumor2.alias;
-          desc = this.rumoredPowerDesc(req, rumored);
+          desc = this.rumoredItemDesc(req, rumored);
         }
         else {
           desc = req.description;
@@ -182,11 +177,6 @@ export class QuestPage implements OnInit {
   describePower(req: Power, withRumors: boolean = false){
     this.playerService.getPlayer(req.rumors && req.rumors.length >= 1 ? req.rumors[0] : 0).then( (rumor1: Player) =>{
       this.playerService.getPlayer(req.rumors && req.rumors.length >= 2 ? req.rumors[1] : 0).then( (rumor2: Player) =>{
-        console.log('player1:')
-        console.dir(rumor1)
-        console.log('player2:')
-        console.dir(rumor2)
-
         let desc;
         if (withRumors && (rumor1 || rumor2)) {
           let rumored = rumor1.alias + ' or ' + rumor2.alias;
